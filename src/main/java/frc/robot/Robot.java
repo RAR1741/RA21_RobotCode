@@ -58,7 +58,7 @@ public class Robot extends TimedRobot {
     FL = new SwerveModule(new TalonFX(7), new CANSparkMax(8, MotorType.kBrushless));
     BR = new SwerveModule(new TalonFX(9), new CANSparkMax(10, MotorType.kBrushless));
     BL = new SwerveModule(new TalonFX(5), new CANSparkMax(6, MotorType.kBrushless));
-    swerve = new SwerveDrive(FR, FL, BR, BL, gyro);
+    swerve = new SwerveDrive(FR, FL, BR, BL);
 
     driver = new XboxController(0);
     operator = new XboxController(1);
@@ -78,7 +78,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    //swerve.manualControl(driver.getY(Hand.kLeft), driver.getX(Hand.kRight));
+    // swerve.manualControl(0, driver.getX(Hand.kRight));
   }
 
   @Override

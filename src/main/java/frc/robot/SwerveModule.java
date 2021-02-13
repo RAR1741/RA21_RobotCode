@@ -1,6 +1,7 @@
 package frc.robot;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 
 import edu.wpi.first.wpilibj.controller.PIDController;
@@ -11,8 +12,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
 public class SwerveModule {
 
-    private static final double SteerEncMax = 0; //TODO: Determine encoder counts for complete rotation
-	private static final double SteerEncMin = 0;
+    private static final double EncPerDeg = 0 / 360.0f; //TODO: Determine encoder counts for complete rotation
 	private TalonFX drive;
     private CANSparkMax angle;
     private PIDController PIDc;
@@ -27,12 +27,13 @@ public class SwerveModule {
         angle.getPIDController().setI(0.0);
         angle.getPIDController().setD(0.0);
         angle.getPIDController().setFeedbackDevice(angle.getEncoder());
+		angle.getPIDController().setOutputRange(-1, 1);
         angle.setIdleMode(IdleMode.kBrake);
     }
 
     public void setAngleDrive(double speed, double angle)
 	{
-		if(Math.abs(getAngleEncoder()/(SteerEncMax/360.0f) - angle) > 90)
+		if(Math.abs(getAngleEncoder()/EncPerDeg - angle) > 90)
 		{
 			angle = (angle + 180)%360;
 			speed = -speed;
@@ -44,10 +45,10 @@ public class SwerveModule {
 		return angle.getEncoder().getVelocity();
 	}
 
-	public void setAngleSpeed(double speed)
-	{
-		angle.set(speed);
-	}
+	// public void setAngleSpeed(double speed)
+	// {
+	// 	angle.set(speed);
+	// }
 
 	public void setDrive(double speed)
 	{
@@ -64,10 +65,15 @@ public class SwerveModule {
 		return angle.getEncoder().getPosition();
 	}
 
-	public void setAngle(double angle)
+	public void setAngle(double goal)
 	{
-		PIDc.setSetpoint(angle*((SteerEncMax-SteerEncMin)/360.0f));
+		angle.getPIDController().setReference(goal*EncPerDeg, ControlType.kPosition);//setSetpoint(goal*((SteerEncMax-SteerEncMin)/360.0f));
     }
+
+	public double getEncPerDeg()
+	{
+		return EncPerDeg;
+	}
 
 	//TODO: Calibrate Angle
 
