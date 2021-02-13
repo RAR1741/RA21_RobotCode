@@ -4,7 +4,18 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
+import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
+import frc.robot.SwerveDrive;
+import frc.robot.SwerveModule;
+
+import com.kauailabs.navx.frc.AHRS;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -13,12 +24,45 @@ import edu.wpi.first.wpilibj.TimedRobot;
  * project.
  */
 public class Robot extends TimedRobot {
+
+  AHRS gyro;
+  SwerveDrive swerve;
+  SwerveModule FR;
+  SwerveModule FL;
+  SwerveModule BR;
+  SwerveModule BL;
+  XboxController driver = null;
+  XboxController operator = null;
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
    */
   @Override
-  public void robotInit() {}
+  public void robotInit() {
+    /**
+     * Drive Train:
+     * Front right drive - 3
+     * Front right angle - 4
+     * Front left drive - 7
+     * Front left angle - 8
+     * Back right drive - 9
+     * Back right angle - 10
+     * Back left drive - 5
+     * Back left angle - 6
+     */
+
+    gyro = new AHRS(SPI.Port.kMXP);
+    gyro.enableLogging(false);
+
+    FR = new SwerveModule(new TalonFX(3), new CANSparkMax(4, MotorType.kBrushless));
+    FL = new SwerveModule(new TalonFX(7), new CANSparkMax(8, MotorType.kBrushless));
+    BR = new SwerveModule(new TalonFX(9), new CANSparkMax(10, MotorType.kBrushless));
+    BL = new SwerveModule(new TalonFX(5), new CANSparkMax(6, MotorType.kBrushless));
+    swerve = new SwerveDrive(FR, FL, BR, BL, gyro);
+
+    driver = new XboxController(0);
+    operator = new XboxController(1);
+  }
 
   @Override
   public void robotPeriodic() {}
@@ -33,7 +77,9 @@ public class Robot extends TimedRobot {
   public void teleopInit() {}
 
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    //swerve.manualControl(driver.getY(Hand.kLeft), driver.getX(Hand.kRight));
+  }
 
   @Override
   public void disabledInit() {}

@@ -25,4 +25,24 @@ public class SwerveDrive {
 
         this.gyro = gyro;
     }
+
+    /* // Test Code
+    public void manualControl(double driveSpeed, double angleSpeed){
+        setDriveSpeed(driveSpeed);
+        setAngleSpeed(angleSpeed);
+    }
+
+    public void setDriveSpeed(double speed){
+        FR.setDrive(speed);
+        FL.setDrive(speed);
+        BR.setDrive(speed);
+        BL.setDrive(speed);
+    }
+
+    public void setAngleSpeed(double speed){
+        FR.setAngleSpeed(speed);
+        FL.setAngleSpeed(speed);
+        BR.setAngleSpeed(speed);
+        BL.setAngleSpeed(speed);
+    } */
 }
