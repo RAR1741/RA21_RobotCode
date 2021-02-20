@@ -34,7 +34,7 @@ public class SwerveDrive {
 		max = 0.0;
     }
 
-    /* // Test Code
+    // Test Code
     public void manualControl(double driveSpeed, double angleSpeed){
         setDriveSpeed(driveSpeed);
         setAngleSpeed(angleSpeed);
@@ -52,7 +52,7 @@ public class SwerveDrive {
         FL.setAngleSpeed(speed);
         BR.setAngleSpeed(speed);
         BL.setAngleSpeed(speed);
-    }*/
+    }
 
     public void driverSwerve(double x, double y, double z, double gyro, boolean fieldOrient)
 	{

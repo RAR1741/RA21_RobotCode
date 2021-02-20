@@ -1,10 +1,12 @@
 package frc.robot;
 
+import com.revrobotics.AlternateEncoderType;
+import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 
-import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.wpilibj.*;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
@@ -15,7 +17,7 @@ public class SwerveModule {
     private static final double EncPerDeg = 0 / 360.0f; //TODO: Determine encoder counts for complete rotation
 	private TalonFX drive;
     private CANSparkMax angle;
-    private PIDController PIDc;
+	private CANEncoder absEncoder;
 
     public SwerveModule(TalonFX d, CANSparkMax a){
         drive = d;
@@ -29,6 +31,8 @@ public class SwerveModule {
         angle.getPIDController().setFeedbackDevice(angle.getEncoder());
 		angle.getPIDController().setOutputRange(-1, 1);
         angle.setIdleMode(IdleMode.kBrake);
+
+		absEncoder = angle.getAlternateEncoder(AlternateEncoderType.kQuadrature, 4096);
     }
 
     public void setAngleDrive(double speed, double angle)
@@ -45,10 +49,10 @@ public class SwerveModule {
 		return angle.getEncoder().getVelocity();
 	}
 
-	// public void setAngleSpeed(double speed)
-	// {
-	// 	angle.set(speed);
-	// }
+	public void setAngleSpeed(double speed)
+	{
+		angle.set(speed);
+	}
 
 	public void setDrive(double speed)
 	{
@@ -63,6 +67,11 @@ public class SwerveModule {
 	public double getAngleEncoder()
 	{
 		return angle.getEncoder().getPosition();
+	}
+
+	public double getAbsoluteAngleEncoder()
+	{
+		return angle.getAlternateEncoder().getPosition();
 	}
 
 	public void setAngle(double goal)
