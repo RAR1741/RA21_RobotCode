@@ -118,33 +118,38 @@ public class SwerveDrive {
 
 		System.out.println("Joystick A: " + String.valueOf(wa2));
 
-        double tmp;
-        if((tmp = closestAngle(FR.getAngleEncoder()/FR.getEncPerDeg(), wa2)) != wa2)
-        {
-			System.out.println("FLIPPED");
-            wa2 = tmp;
-            ws2 *= -1;
-        }
-        if((tmp = closestAngle(FL.getAngleEncoder()/FL.getEncPerDeg(), wa1)) != wa1)
-        {
-            wa1 = tmp;
-            ws1 *= -1;
-        }
-        if((tmp = closestAngle(BR.getAngleEncoder()/BR.getEncPerDeg(), wa3)) != wa3)
-        {
-            wa3 = tmp;
-            ws3 *= -1;
-        }
-        if((tmp = closestAngle(BL.getAngleEncoder()/BL.getEncPerDeg(), wa4)) != wa4)
-        {
-            wa4 = tmp;
-            ws4 *= -1;
-        }
+        SwerveTarget tmp;
+        // if((tmp = closestAngle(FR.getAngleEncoder()/FR.getEncPerDeg(), wa2)) != wa2 && ((tmp + 360)%360 != wa2 || (tmp - 360)%360 != wa2))
+        // {
+		// 	System.out.println("FLIPPED");
+        //     wa2 = tmp;
+        //     ws2 *= -1;
+        // }
+
+        tmp = closestAngle(FR.getAngleEncoder()/FR.getEncPerDeg(), wa2);
+		wa2 = tmp.getTarget();
+		ws2 *= tmp.getMotorScale();
+		
+        // if((tmp = closestAngle(FL.getAngleEncoder()/FL.getEncPerDeg(), wa1)) != wa1)
+        // {
+        //     wa1 = tmp;
+        //     ws1 *= -1;
+        // }
+        // if((tmp = closestAngle(BR.getAngleEncoder()/BR.getEncPerDeg(), wa3)) != wa3)
+        // {
+        //     wa3 = tmp;
+        //     ws3 *= -1;
+        // }
+        // if((tmp = closestAngle(BL.getAngleEncoder()/BL.getEncPerDeg(), wa4)) != wa4)
+        // {
+        //     wa4 = tmp;
+        //     ws4 *= -1;
+        // }
 		
 		FR.setDrive(ws2);
-		FL.setDrive(-ws1);
-		BR.setDrive(ws3);
-		BL.setDrive(-ws4);
+		// FL.setDrive(-ws1);
+		// BR.setDrive(ws3);
+		// BL.setDrive(-ws4);
 
 		System.out.println("Target A: " + String.valueOf(wa2));
 		System.out.println("Target S: " + String.valueOf(ws2));
@@ -175,9 +180,9 @@ public class SwerveDrive {
 	public void angleToZero()
 	{
 		FR.setDrive(0);
-		FL.setDrive(0);
-		BR.setDrive(0);
-		BL.setDrive(0);
+		// FL.setDrive(0);
+		// BR.setDrive(0);
+		// BL.setDrive(0);
 		FR.setAngle(0);
 		FL.setAngle(0);
 		BR.setAngle(0);
@@ -188,27 +193,48 @@ public class SwerveDrive {
 	{
 		angleToZero();
 		FR.setDriveSpeed(right);
-		BR.setDriveSpeed(right);
-		FL.setDriveSpeed(-left);
-		BL.setDriveSpeed(-left);
+		// BR.setDriveSpeed(right);
+		// FL.setDriveSpeed(-left);
+		// BL.setDriveSpeed(-left);
 	}
 
-    public static double closestAngle(double p, double t)
-	{
-		// return t;
-		System.out.println("Position, Target:" + String.valueOf(p) + ":" + String.valueOf(t));
+    // public static double closestAngle(double p, double t)
+	// {
+	// 	// return t;
+	// 	System.out.println("Position, Target:" + String.valueOf(p) + ":" + String.valueOf(t));
 
+	// 	p %= 360;
+	// 	double t1 = t % 360;
+	// 	double t2 = (t1+180)%360;
+
+	// 	double d1 = Math.abs(p - t1);
+	// 	if(d1 > 180) d1 = 360 - d1;
+
+	// 	double d2 = Math.abs(p -t2);
+	// 	if(d2 > 180) d2 = 360 - d2;
+
+	// 	return (d1 < d2 ? t1 : t2);
+	// }
+
+	public static SwerveTarget closestAngle(double p, double t)
+	{
+		double pTemp = p;
 		p %= 360;
 		double t1 = t % 360;
 		double t2 = (t1+180)%360;
 
 		double d1 = Math.abs(p - t1);
-		if(d1 > 180) d1 = 360 - d1;
+		if(d1 > 180) d1 -= 360;
 
 		double d2 = Math.abs(p -t2);
-		if(d2 > 180) d2 = 360 - d2;
+		if(d2 > 180) d2 -= 360;
 
-		return (d1 < d2 ? t1 : t2);
+		double df = (Math.abs(d1) < Math.abs(d2) ? d1 : d2);
+		double motorScale = (Math.abs(d1) < Math.abs(d2) ? 1 : -1);
+
+		double target = pTemp + df;
+
+		return new SwerveTarget(target, motorScale);
 	}
 }
 
