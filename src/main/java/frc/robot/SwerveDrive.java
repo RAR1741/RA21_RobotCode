@@ -24,14 +24,15 @@ public class SwerveDrive {
         this.BR = BR;
         this.BL = BL;
 
-        length = 1; //tbd
-        width = 1; //tbd
+        length = 1;
+        width = 1;
         diameter = Math.sqrt(Math.pow(length,2)+Math.pow(width,2));
         temp = 0.0;
 		a = 0.0;b = 0.0;c = 0.0;d = 0.0;
 		ws1 = 0.0;ws2 = 0.0;ws3 = 0.0;ws4 = 0.0;
 		wa1 = 0.0;wa2 = 0.0;wa3 = 0.0;wa4 = 0.0;
 		max = 0.0;
+		movecount = 20;
     }
 
     // Test Code
@@ -59,6 +60,7 @@ public class SwerveDrive {
 		if((x!=0 || y!=0) || z!=0)
 		{
 			swerve(x, y, z, gyro, fieldOrient);
+			movecount = 20;
 		}
 		else
 		{
@@ -70,9 +72,9 @@ public class SwerveDrive {
 			else
 			{
 				FR.setDrive(0);
-				FL.setDrive(0);
-				BR.setDrive(0);
-				BL.setDrive(0);
+				// FL.setDrive(0);
+				// BR.setDrive(0);
+				// BL.setDrive(0);
 			}
 		}
 	}
@@ -108,14 +110,18 @@ public class SwerveDrive {
 		wa2 = Math.atan2(b,d) * 180.0f/Math.PI;
 		wa3 = Math.atan2(a,d) * 180.0f/Math.PI;
 		wa4 = Math.atan2(a,c) * 180.0f/Math.PI;
+		
 		if(wa1 < 0){wa1 += 360;}//wa1 = FL
 		if(wa2 < 0){wa2 += 360;}//wa2 = FR
 		if(wa3 < 0){wa3 += 360;}//wa3 = BR
 		if(wa4 < 0){wa4 += 360;}//wa4 = BL
 
+		System.out.println("Joystick A: " + String.valueOf(wa2));
+
         double tmp;
         if((tmp = closestAngle(FR.getAngleEncoder()/FR.getEncPerDeg(), wa2)) != wa2)
         {
+			System.out.println("FLIPPED");
             wa2 = tmp;
             ws2 *= -1;
         }
@@ -135,10 +141,14 @@ public class SwerveDrive {
             ws4 *= -1;
         }
 		
-		FR.setDriveSpeed(ws2);
-		FL.setDriveSpeed(-ws1);
-		BR.setDriveSpeed(ws3);
-		BL.setDriveSpeed(-ws4);
+		FR.setDrive(ws2);
+		FL.setDrive(-ws1);
+		BR.setDrive(ws3);
+		BL.setDrive(-ws4);
+
+		System.out.println("Target A: " + String.valueOf(wa2));
+		System.out.println("Target S: " + String.valueOf(ws2));
+		System.out.println("");
 
 		FR.setAngle(wa2);
 		FL.setAngle(wa1);
@@ -185,13 +195,20 @@ public class SwerveDrive {
 
     public static double closestAngle(double p, double t)
 	{
+		// return t;
+		System.out.println("Position, Target:" + String.valueOf(p) + ":" + String.valueOf(t));
+
 		p %= 360;
 		double t1 = t % 360;
 		double t2 = (t1+180)%360;
+
 		double d1 = Math.abs(p - t1);
 		if(d1 > 180) d1 = 360 - d1;
+
 		double d2 = Math.abs(p -t2);
 		if(d2 > 180) d2 = 360 - d2;
+
 		return (d1 < d2 ? t1 : t2);
 	}
 }
+

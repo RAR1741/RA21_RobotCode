@@ -14,9 +14,9 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
 public class SwerveModule {
 
-    private static final double EncPerDeg = 0 / 360.0f; //TODO: Determine encoder counts for complete rotation
+    public static final double EncPerDeg = 1.0f * (12.0f / 1.0f) * (64.0f / 12.0f) / 360.0f;
 	private TalonFX drive;
-    private CANSparkMax angle;
+    public CANSparkMax angle;
 	private CANEncoder absEncoder;
 
     public SwerveModule(TalonFX d, CANSparkMax a){
@@ -25,7 +25,7 @@ public class SwerveModule {
 
         drive.setNeutralMode(NeutralMode.Brake);
 
-        angle.getPIDController().setP(2);
+        angle.getPIDController().setP(0.05);
         angle.getPIDController().setI(0.0);
         angle.getPIDController().setD(0.0);
         angle.getPIDController().setFeedbackDevice(angle.getEncoder());

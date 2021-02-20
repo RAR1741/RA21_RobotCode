@@ -6,6 +6,7 @@ package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.EncoderType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.Encoder;
@@ -79,8 +80,19 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    swerve.manualControl(0, driver.getX(Hand.kRight));
-    FR.setDrive(driver.getY(Hand.kLeft));
+    // if (driver.getAButtonPressed()){FR.setAngle(90);}
+    // if (driver.getAButtonPressed()){FR.setAngle((FR.getAngleEncoder() / FR.EncPerDeg) + 90);}
+		// System.out.println("FR Current Angle: " + String.valueOf(FR.getAngleEncoder() / FR.EncPerDeg));
+    // System.out.println(FR.angle.getEncoder().getCountsPerRevolution());
+    // System.out.println(FR.angle.getEncoder(EncoderType.kHallSensor, 1).getPosition());
+    if (FR.angle.getOutputCurrent()>1)
+      System.out.println(FR.angle.getOutputCurrent());
+
+    swerve.driverSwerve(driver.getX(Hand.kLeft), -driver.getY(Hand.kLeft), driver.getX(Hand.kRight), gyro.getAngle(), false);
+    // swerve.manualControl(0, driver.getX(Hand.kRight));
+    // BR.setDrive(driver.getY(Hand.kLeft));
+    // BL.setDrive(driver.getY(Hand.kLeft));
+
   }
 
   @Override
