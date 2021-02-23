@@ -219,16 +219,17 @@ public class SwerveDrive {
 	public static SwerveTarget closestAngle(double p, double t)
 	{
 		double pTemp = p;
+		
 		p %= 360;
+		if(p < 0) p += 360;
+		
 		double t1 = t % 360;
-		double t2 = (t1+180)%360;
+		
+		double d1 = p - t1;
+		if(d1 > 180) d1 = 360 - d1;
+		if(d1 < -180) d1 = -d1 - 360;
 
-		double d1 = Math.abs(p - t1);
-		if(d1 > 180) d1 -= 360;
-
-		double d2 = Math.abs(p -t2);
-		if(d2 > 180) d2 -= 360;
-
+        	double d2 = (d1 > 0 ? d1 - 180 : 180 + d1);
 		double df = (Math.abs(d1) < Math.abs(d2) ? d1 : d2);
 		double motorScale = (Math.abs(d1) < Math.abs(d2) ? 1 : -1);
 
