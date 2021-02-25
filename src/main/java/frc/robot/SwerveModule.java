@@ -25,7 +25,7 @@ public class SwerveModule {
 
         drive.setNeutralMode(NeutralMode.Brake);
 
-        angle.getPIDController().setP(0.05);
+        angle.getPIDController().setP(0.1);
         angle.getPIDController().setI(0.0);
         angle.getPIDController().setD(0.0);
         angle.getPIDController().setFeedbackDevice(angle.getEncoder());

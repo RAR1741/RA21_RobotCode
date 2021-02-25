@@ -85,8 +85,8 @@ public class Robot extends TimedRobot {
 		// System.out.println("FR Current Angle: " + String.valueOf(FR.getAngleEncoder() / FR.EncPerDeg));
     // System.out.println(FR.angle.getEncoder().getCountsPerRevolution());
     // System.out.println(FR.angle.getEncoder(EncoderType.kHallSensor, 1).getPosition());
-    if (FR.angle.getOutputCurrent()>1)
-      System.out.println(FR.angle.getOutputCurrent());
+    // if (FR.angle.getOutputCurrent()>1)
+    //   System.out.println(FR.angle.getOutputCurrent());
 
     swerve.driverSwerve(driver.getX(Hand.kLeft), -driver.getY(Hand.kLeft), driver.getX(Hand.kRight), gyro.getAngle(), false);
     // swerve.manualControl(0, driver.getX(Hand.kRight));
