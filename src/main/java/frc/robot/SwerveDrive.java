@@ -248,8 +248,8 @@ public class SwerveDrive {
 		if(d1 < -180) d1 = d1 + 360;
 
         double d2 = (d1 > 0 ? d1 - 180 : 180 + d1);
-		double df = (Math.abs(d1) < Math.abs(d2) ? d1 : d2);
-		double motorScale = (Math.abs(d1) < Math.abs(d2) ? 1 : -1);
+		double df = (Math.abs(d1) <= Math.abs(d2) ? d1 : d2);
+		double motorScale = (Math.abs(d1) <= Math.abs(d2) ? 1 : -1);
 
 		double target = pTemp + df;
 
