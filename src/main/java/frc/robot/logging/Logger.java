@@ -10,84 +10,96 @@ import java.util.Map;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
-public class Logger 
-{
+/** Manages NetworkTable and file logging. */
+public class Logger {
 	private String filename;
 	private FileWriter log = null;
 	private Map<String, String> fields;
 	private List<Loggable> loggables;
 	private NetworkTable table;
 
-	public Logger()
-	{
+	public Logger() {
 		fields = new LinkedHashMap<String, String>();
 		loggables = new ArrayList<>();
 		table = NetworkTableInstance.getDefault().getTable("logging");
-		for(String s : table.getKeys())
-		{
+		for (String s : table.getKeys()) {
 			table.delete(s);
 		}
 	}
 
-	public boolean open(String filename)
-	{
-		this.filename = filename;
-		try
-		{
-			log = new FileWriter(filename);
-		}
-		catch (IOException e)
-		{
+	/**
+	 * Opens a file to log to.
+	 * @param filepath Path of the file to open
+	 * @return Whether opening the file succeeded
+	 */
+	public boolean open(String filepath) {
+		this.filename = filepath;
+		try {
+			log = new FileWriter(filepath);
+		} catch (IOException e) {
 			return false;
 		}
 		return true;
 	}
 
-	public void close()
-	{
-		if(log!=null)
-		{
-			try
-			{
+	/**
+	 * Closes the current log file.
+	 * @return Whether closing the file succeeded
+	 */
+	public boolean close() {
+		if (log != null) {
+			try {
 				log.close();
-			}
-			catch (IOException e)
-			{
+			} catch (IOException e) {
 				e.printStackTrace();
+				return false;
 			}
+			return true;
 		}
+		return false;
 	}
 
-	public boolean reset()
-	{
+	/**
+	 * Resets the current log file.
+	 * @return true
+	 */
+	public boolean reset() {
 		close();
 		open(this.filename);
 		writeAttributes();
 		return true;
 	}
 
-	public boolean hasAttribute(String name)
-	{
+	/**
+	 * Checks to see if the logger already has a specific key.
+	 * @param name Key to check
+	 * @return Whether the key already exists
+	 */
+	public boolean hasAttribute(String name) {
 		return fields.containsKey(name);
 	}
 
 	// TODO: needs some serious optimization most likely
-//	Entry<String,String> FindField(String name)
-//	{
-//		String real_name = Normalize(name);
-//		for (Entry<String,String> e : fields)
-//		{
-//			if (real_name == e.getKey())
-//			{
-//				System.out.println(e.getKey());
-//				return e;
-//			}
-//		}
-//		return null;
-//	}
+	// Entry<String,String> FindField(String name)
+	// {
+	// String real_name = Normalize(name);
+	// for (Entry<String,String> e : fields)
+	// {
+	// if (real_name == e.getKey())
+	// {
+	// System.out.println(e.getKey());
+	// return e;
+	// }
+	// }
+	// return null;
+	// }
 
-	public boolean addAttribute(String field)
-	{
+	/**
+	 * Adds an attribute to the logger.
+	 * @param field
+	 * @return
+	 */
+	public boolean addAttribute(String field) {
 		if (hasAttribute(field)) {
 			// TODO: Output warning
 			return false; // We already have this attribute
@@ -98,86 +110,110 @@ public class Logger
 		return true;
 	}
 
-	public boolean log(String field, double d)
-	{
+	/**
+	 * Logs data to the Logger.
+	 * @param field Key being logged
+	 * @param data Number data to log
+	 * @return Whether the operation succeeded
+	 */
+	public boolean log(String field, double d) {
 		table.getEntry(field).setDouble(d);
 		return log(field, String.valueOf(d));
 	}
 
-	public boolean log(String field, String data)
-	{
-		if(!hasAttribute(field)) return false;
-		
+	/**
+	 * Logs data to the Logger
+	 * @param field key being logged
+	 * @param data String data to log
+	 * @return whether the operation succeeded
+	 */
+	public boolean log(String field, String data) {
+		if (!hasAttribute(field))
+			return false;
+
 		fields.put(field, data);
 		return true;
 	}
-	
-	public boolean log(String field, Object data)
-	{
-		if(!hasAttribute(field)) return false;
-		
+
+	/**
+	 * Logs data to the Logger
+	 * @param field key being logged
+	 * @param data data to log
+	 * @return whether the operation succeeded
+	 */
+	public boolean log(String field, Object data) {
+		if (!hasAttribute(field))
+			return false;
+
 		fields.put(field, data.toString());
 		return true;
 	}
 
-	public boolean writeAttributes()
-	{
-		try
-		{
-			for (Map.Entry<String,String> e : fields.entrySet())
-			{
+	/**
+	 * Writes the headers to the file.
+	 * @return Whether the operation succeeded
+	 */
+	public boolean writeAttributes() {
+		try {
+			for (Map.Entry<String, String> e : fields.entrySet()) {
 				log.write(e.getKey() + ',');
 			}
 			log.write("\n");
 			log.flush();
-		}
-		catch (IOException e1)
-		{
+		} catch (IOException e1) {
 			e1.printStackTrace();
 			return false;
 		}
 		return true;
 	}
 
-	public boolean writeLine()
-	{
-		try
-		{
-			for (Map.Entry<String,String> e : fields.entrySet())
-			{
+	/**
+	 * Writes the current values to the file.
+	 * @return Whether the operation succeeded
+	 */
+	public boolean writeLine() {
+		try {
+			for (Map.Entry<String, String> e : fields.entrySet()) {
 				log.write(e.getValue() + ',');
 			}
 			log.write("\n");
-		}
-		catch (IOException e)
-		{
+		} catch (IOException e) {
 			return false;
 		}
 		return true;
 	}
 
-	String Normalize(String str)
-	{
+	/**
+	 * Normalizes the name of a key.
+	 * @param str key name to normalize
+	 * @return normalized key name
+	 */
+	String normalize(String str) {
 		return str.toLowerCase();
 	}
-	
-	public void addLoggable(Loggable l)
-	{
+
+	/**
+	 * Registers a Loggable with the Logger.
+	 * @param l loggable to register
+	 */
+	public void addLoggable(Loggable l) {
 		loggables.add(l);
 	}
-	
-	public void setupLoggables()
-	{
-		for(Loggable l : loggables)
-		{
+
+	/**
+	 * Calls the setupLogging method of all currently registered Loggables.
+	 */
+	public void setupLoggables() {
+		for (Loggable l : loggables) {
 			l.setupLogging(this);
 		}
 	}
-	
-	public void log()
-	{
-		for(Loggable l : loggables)
-		{
+
+	/**
+	 * Calls the log method of all currently registered Loggables.
+	 */
+	public void log() {
+		for (Loggable l : loggables) {
 			l.log(this);
 		}
 	}
