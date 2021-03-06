@@ -34,7 +34,7 @@ public class SwerveModule {
 		angle.config_kP(0, 0.1);
 		angle.config_kI(0, 0);
 		angle.config_kD(0, 0);
-		angle.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 0);
+		angle.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 50);
     }
 
     public void setAngleDrive(double speed, double angle)
@@ -81,8 +81,6 @@ public class SwerveModule {
 		return EncPerDeg;
 	}
 
-	//TODO: Calibrate Angle
-
     public double getDriveEnc()
 	{
 		return drive.getSelectedSensorPosition();
@@ -98,6 +96,12 @@ public class SwerveModule {
         drive.setNeutralMode(NeutralMode.Coast);	
     }
 
-
+	public void initMagEncoder(int encoderCenter){
+		int pulseWidth = angle.getSensorCollection().getPulseWidthPosition();
+		pulseWidth -= encoderCenter;
+		pulseWidth %= 360;
+		if(pulseWidth < 0) pulseWidth += 360;
+		angle.getSensorCollection().setQuadraturePosition(pulseWidth, 50);
+	}
 	
 }

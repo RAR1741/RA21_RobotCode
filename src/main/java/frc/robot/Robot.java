@@ -4,8 +4,7 @@
 
 package frc.robot;
 
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.*;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.EncoderType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -57,11 +56,15 @@ public class Robot extends TimedRobot {
     gyro = new AHRS(SPI.Port.kMXP);
     gyro.enableLogging(false);
 
-    FR = new SwerveModule(new TalonFX(3), new TalonSRX(4));
-    FL = new SwerveModule(new TalonFX(7), new TalonSRX(8));
-    BR = new SwerveModule(new TalonFX(9), new TalonSRX(10));
-    BL = new SwerveModule(new TalonFX(5), new TalonSRX(6));
+    FR = new SwerveModule(new TalonFX(3), new WPI_TalonSRX(4));
+    FL = new SwerveModule(new TalonFX(7), new WPI_TalonSRX(8));
+    BR = new SwerveModule(new TalonFX(9), new WPI_TalonSRX(10));
+    BL = new SwerveModule(new TalonFX(5), new WPI_TalonSRX(6));
     swerve = new SwerveDrive(FR, FL, BR, BL);
+    FR.initMagEncoder(0); //TODO: Config center position
+    FL.initMagEncoder(0);
+    BR.initMagEncoder(0);
+    BL.initMagEncoder(0);
 
     driver = new XboxController(0);
     operator = new XboxController(1);
