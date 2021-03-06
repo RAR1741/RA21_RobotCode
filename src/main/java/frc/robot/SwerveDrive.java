@@ -151,8 +151,10 @@ public class SwerveDrive {
 		// BR.setDrive(ws3);
 		// BL.setDrive(-ws4);
 
+		System.out.println("Current A: " + String.valueOf(FR.getAngleEncoder()/FR.getEncPerDeg()));
 		System.out.println("Target A: " + String.valueOf(wa2));
 		System.out.println("Target S: " + String.valueOf(ws2));
+		System.out.println("");
 		System.out.println("");
 
 		FR.setAngle(wa2);
@@ -229,7 +231,7 @@ public class SwerveDrive {
 		if(d1 > 180) d1 = 360 - d1;
 		if(d1 < -180) d1 = -d1 - 360;
 
-        	double d2 = (d1 > 0 ? d1 - 180 : 180 + d1);
+        double d2 = (d1 > 0 ? d1 - 180 : 180 + d1);
 		double df = (Math.abs(d1) < Math.abs(d2) ? d1 : d2);
 		double motorScale = (Math.abs(d1) < Math.abs(d2) ? 1 : -1);
 

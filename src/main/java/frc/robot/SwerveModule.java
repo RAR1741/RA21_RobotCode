@@ -8,31 +8,33 @@ import com.revrobotics.CANSparkMax.IdleMode;
 
 import edu.wpi.first.wpilibj.*;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.TalonSRXPIDSetConfiguration;
 
 public class SwerveModule {
 
     public static final double EncPerDeg = 1.0f * (12.0f / 1.0f) * (64.0f / 12.0f) / 360.0f;
 	private TalonFX drive;
-    public CANSparkMax angle;
-	private CANEncoder absEncoder;
+    // public CANSparkMax angle;
+	public TalonSRX angle;
+	public TalonSRXPIDSetConfiguration pid;
 
-    public SwerveModule(TalonFX d, CANSparkMax a){
+    public SwerveModule(TalonFX d, TalonSRX a){
         drive = d;
         angle = a;
 
         drive.setNeutralMode(NeutralMode.Brake);
 
-        angle.getPIDController().setP(0.05);
-        angle.getPIDController().setI(0.0);
-        angle.getPIDController().setD(0.0);
-        angle.getPIDController().setFeedbackDevice(angle.getEncoder());
-		angle.getPIDController().setOutputRange(-1, 1);
-        angle.setIdleMode(IdleMode.kBrake);
-
-		absEncoder = angle.getAlternateEncoder(AlternateEncoderType.kQuadrature, 4096);
+		angle.selectProfileSlot(0, 0);
+		angle.config_kP(0, 0.1);
+		angle.config_kI(0, 0);
+		angle.config_kD(0, 0);
+		angle.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 0);
     }
 
     public void setAngleDrive(double speed, double angle)
@@ -46,12 +48,12 @@ public class SwerveModule {
 	
 	public double getTurnSpeed()
 	{
-		return angle.getEncoder().getVelocity();
+		return angle.getSelectedSensorVelocity();
 	}
 
 	public void setAngleSpeed(double speed)
 	{
-		angle.set(speed);
+		angle.set(ControlMode.PercentOutput, speed);
 	}
 
 	public void setDrive(double speed)
@@ -66,17 +68,12 @@ public class SwerveModule {
 	
 	public double getAngleEncoder()
 	{
-		return angle.getEncoder().getPosition();
-	}
-
-	public double getAbsoluteAngleEncoder()
-	{
-		return angle.getAlternateEncoder().getPosition();
+		return angle.getSelectedSensorPosition();
 	}
 
 	public void setAngle(double goal)
 	{
-		angle.getPIDController().setReference(goal*EncPerDeg, ControlType.kPosition);//setSetpoint(goal*((SteerEncMax-SteerEncMin)/360.0f));
+		angle.set(ControlMode.Position, goal*EncPerDeg);
     }
 
 	public double getEncPerDeg()
@@ -100,5 +97,7 @@ public class SwerveModule {
 	{
         drive.setNeutralMode(NeutralMode.Coast);	
     }
+
+
 	
 }
