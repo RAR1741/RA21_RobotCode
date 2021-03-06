@@ -1,5 +1,6 @@
 package frc.robot.logging;
 
+import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -13,7 +14,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 /** Manages NetworkTable and file logging. */
 public class Logger {
 	private String filename;
-	private FileWriter log = null;
+	private BufferedWriter log = null;
 	private Map<String, String> fields;
 	private List<Loggable> loggables;
 	private NetworkTable table;
@@ -35,7 +36,7 @@ public class Logger {
 	public boolean open(String filepath) {
 		this.filename = filepath;
 		try {
-			log = new FileWriter(filepath);
+			log = new BufferedWriter(new FileWriter(filepath));
 		} catch (IOException e) {
 			return false;
 		}
