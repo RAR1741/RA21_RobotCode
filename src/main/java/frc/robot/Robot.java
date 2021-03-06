@@ -4,7 +4,13 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -17,8 +23,19 @@ public class Robot extends TimedRobot {
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
    */
+
+  Shooter shooter;
+  XboxController driver = null;
+  XboxController operator = null;
+
   @Override
-  public void robotInit() {}
+  public void robotInit() {
+
+    shooter = new Shooter(new TalonFX(14), new CANSparkMax(11, MotorType.kBrushless), new CANSparkMax(13, MotorType.kBrushless));
+
+    driver = new XboxController(0);
+    operator = new XboxController(1);
+  }
 
   @Override
   public void robotPeriodic() {}
@@ -33,7 +50,17 @@ public class Robot extends TimedRobot {
   public void teleopInit() {}
 
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+
+    if(Math.abs(driver.getY(Hand.kLeft)) > 0.05)
+      shooter.setPower(driver.getY(Hand.kLeft));
+
+    shooter.setFeed(driver.getAButton());
+
+    if(Math.abs(driver.getY(Hand.kRight)) > 0.05)
+      shooter.setAnglePower(driver.getY(Hand.kRight));
+
+  }
 
   @Override
   public void disabledInit() {}
