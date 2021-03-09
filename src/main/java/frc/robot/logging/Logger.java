@@ -1,9 +1,11 @@
 package frc.robot.logging;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +28,24 @@ public class Logger {
 		for (String s : table.getKeys()) {
 			table.delete(s);
 		}
+	}
+
+	/**
+	 * Opens a file with the name being the current date and time to log to.
+	 * @return Whether opening the file succeeded
+	 */
+	public boolean open() {
+		Calendar calendar = Calendar.getInstance();
+		String dir = "/home/lvuser/logs";
+		new File(dir).mkdirs();
+		if (new File("/media/sda").exists()) {
+			dir = "/media/sda";
+		}
+		String name = dir + "/log-" + calendar.get(Calendar.YEAR) + "-" + calendar.get(Calendar.MONTH) + "-"
+				+ calendar.get(Calendar.DAY_OF_MONTH) + "_" + calendar.get(Calendar.HOUR_OF_DAY) + "-"
+				+ calendar.get(Calendar.MINUTE) + "-" + calendar.get(Calendar.SECOND) + ".csv";
+		System.out.printf("Logging to file: '%s'%n", new File(name).getAbsolutePath());
+		return this.open(name);
 	}
 
 	/**
@@ -79,21 +99,6 @@ public class Logger {
 	public boolean hasAttribute(String name) {
 		return fields.containsKey(name);
 	}
-
-	// TODO: needs some serious optimization most likely
-	// Entry<String,String> FindField(String name)
-	// {
-	// String real_name = Normalize(name);
-	// for (Entry<String,String> e : fields)
-	// {
-	// if (real_name == e.getKey())
-	// {
-	// System.out.println(e.getKey());
-	// return e;
-	// }
-	// }
-	// return null;
-	// }
 
 	/**
 	 * Adds an attribute to the logger.
@@ -208,6 +213,14 @@ public class Logger {
 		for (Loggable l : loggables) {
 			l.setupLogging(this);
 		}
+	}
+
+	/**
+	 * Sets up all currently registered Loggables, along with writing the header to the file.
+	 */
+	public void setup() {
+		this.setupLoggables();
+		this.writeAttributes();
 	}
 
 	/**
