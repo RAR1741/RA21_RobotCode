@@ -24,15 +24,15 @@ public class Shooter {
     }
 
     public void setPower(double power){
-        shooter.set(ControlMode.PercentOutput, power);
+        shooter.set(ControlMode.PercentOutput, power*0.5);
     }
 
     public void setFeed(boolean feed){
-        feeder.set(feed ? 1 : 0);
+        feeder.set(feed ? 0.15 : 0);
     }
 
     public void setAnglePower(double power){
-        angle.set(power);
+        angle.set(power*0.05);
     }
 
     public void setAngle(double goal){

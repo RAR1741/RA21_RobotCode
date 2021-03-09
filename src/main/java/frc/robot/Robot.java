@@ -52,13 +52,9 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
 
-    if(Math.abs(driver.getY(Hand.kLeft)) > 0.05)
-      shooter.setPower(driver.getY(Hand.kLeft));
-
+    shooter.setPower(Math.abs(driver.getY(Hand.kLeft)) > 0.05 ? driver.getY(Hand.kLeft) : 0);
     shooter.setFeed(driver.getAButton());
-
-    if(Math.abs(driver.getY(Hand.kRight)) > 0.05)
-      shooter.setAnglePower(driver.getY(Hand.kRight));
+    shooter.setAnglePower(Math.abs(driver.getY(Hand.kRight)) > 0.05 ? driver.getY(Hand.kRight) : 0);
 
   }
 
