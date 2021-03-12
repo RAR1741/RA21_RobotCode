@@ -31,10 +31,8 @@ public class JsonAutonomous extends Autonomous{
     private JsonReader jr;
     private JsonParser jp;
 
-    private enum Unit { Seconds, Milliseconds, EncoderTicks, Rotations, Inches, Feet, Degrees, Invalid };
 
-
-    private static class AutoInstruction
+    public static class AutoInstruction
 	{
 		public String type;
 		public Unit unit;
@@ -43,7 +41,7 @@ public class JsonAutonomous extends Autonomous{
 
         
     
-        private enum Unit { Seconds, Milliseconds, EncoderTicks, Rotations, Inches, Feet, Degrees, Invalid };
+        public enum Unit { Seconds, Milliseconds, EncoderTicks, Rotations, Inches, Feet, Degrees, Invalid }
 
 		public AutoInstruction(String type, List<Double> args)
 		{
@@ -78,10 +76,9 @@ public class JsonAutonomous extends Autonomous{
 		instructions = new ArrayList<AutoInstruction>();
 		try
 		{
-			fr = new FileReader(new File(file));
+			fr = new FileReader(file);
 			jr = new JsonReader(fr);
-			jp = new JsonParser();
-			auto = jp.parse(jr);
+			auto = JsonParser.parseReader(jr);
 			JsonElement inner = auto.getAsJsonObject().get("auto");
 			if(inner.isJsonArray())
 			{
@@ -98,7 +95,7 @@ public class JsonAutonomous extends Autonomous{
 					String type = o.get("type").getAsString();
 
 					String unitString = o.has("unit") ? o.get("unit").getAsString() : null;
-					Unit unit = unitString != null ? parseUnit(unitString) : null;
+					AutoInstruction.Unit unit = unitString != null ? parseUnit(unitString) : null;
 
 					double amount = o.has("amount") ? o.get("amount").getAsDouble() : null;
 
@@ -113,9 +110,9 @@ public class JsonAutonomous extends Autonomous{
 		}
 	}
 
-    public static Unit parseUnit(String in)
+    public static AutoInstruction.Unit parseUnit(String in)
 	{
-		return Unit.valueOf(in);
+		return AutoInstruction.Unit.valueOf(in);
 	}
 
     @Override
