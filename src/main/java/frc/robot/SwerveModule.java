@@ -18,7 +18,8 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRXPIDSetConfiguration;
 
 public class SwerveModule {
 
-    public static final double EncPerDeg = 1.0f * (12.0f / 1.0f) * (64.0f / 12.0f) / 360.0f;
+    // public static final double EncPerDeg = 1.0f * (12.0f / 1.0f) * (64.0f / 12.0f) / 360.0f;
+	public static final double EncPerDeg = 4096.0f / 360.0f;
 	private TalonFX drive;
     // public CANSparkMax angle;
 	public TalonSRX angle;
@@ -31,11 +32,11 @@ public class SwerveModule {
         drive.setNeutralMode(NeutralMode.Brake);
 
 		angle.selectProfileSlot(0, 0);
-		angle.config_kP(0, 0.1);
+		angle.config_kP(0, 1);
 		angle.config_kI(0, 0);
 		angle.config_kD(0, 0);
 		angle.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 50);
-    }
+	}
 
     public void setAngleDrive(double speed, double angle)
 	{
@@ -68,7 +69,8 @@ public class SwerveModule {
 	
 	public double getAngleEncoder()
 	{
-		return angle.getSelectedSensorPosition();
+		return angle.getSensorCollection().getPulseWidthPosition();
+
 	}
 
 	public void setAngle(double goal)
@@ -76,14 +78,13 @@ public class SwerveModule {
 		angle.set(ControlMode.Position, goal*EncPerDeg);
     }
 
-	public double getEncPerDeg()
-	{
-		return EncPerDeg;
-	}
-
     public double getDriveEnc()
 	{
 		return drive.getSelectedSensorPosition();
+	}
+
+	public double getAngle(){
+		return getAngleEncoder()/EncPerDeg;
 	}
 
 	public void setBrake() 

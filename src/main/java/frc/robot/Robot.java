@@ -119,16 +119,15 @@ public class Robot extends TimedRobot {
     // https://www.chiefdelphi.com/t/using-the-vex-srx-mag-encoders-with-spark-max/376261/13
 
     // ACTUAL CODE
-    // swerve.driverSwerve(
-    //   driver.getX(Hand.kLeft),
-    //   -driver.getY(Hand.kLeft),
-    //   driver.getX(Hand.kRight),
-    //   gyro.getAngle(),
-    //   false
-    // );
+    swerve.driverSwerve(
+      driver.getX(Hand.kLeft),
+      -driver.getY(Hand.kLeft),
+      driver.getX(Hand.kRight),
+      gyro.getAngle(),
+      false
+    );
     // swerve.manualControl(0, driver.getX(Hand.kRight));
     // BR.setDrive(driver.getY(Hand.kLeft));
-    BL.setDrive(driver.getY(Hand.kLeft));
 
   }
 
