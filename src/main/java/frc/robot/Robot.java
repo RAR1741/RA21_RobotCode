@@ -41,9 +41,6 @@ public class Robot extends TimedRobot {
   SwerveModule BL;
   XboxController driver = null;
   XboxController operator = null;
-  CANSparkMax frMotor;
-
-  TalonSRX _talon;
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -113,8 +110,8 @@ public class Robot extends TimedRobot {
     // System.out.println(FR.angle.getOutputCurrent());
 
     // Talon SRX test code
-    int pulseWidth = _talon.getSensorCollection().getPulseWidthPosition();
-    System.out.println(pulseWidth);
+    // int pulseWidth = _talon.getSensorCollection().getPulseWidthPosition();
+    // System.out.println(pulseWidth);
 
     // Spark max test code
     // System.out.println(frMotor.getAlternateEncoder(AlternateEncoderType.kQuadrature,
@@ -122,11 +119,16 @@ public class Robot extends TimedRobot {
     // https://www.chiefdelphi.com/t/using-the-vex-srx-mag-encoders-with-spark-max/376261/13
 
     // ACTUAL CODE
-    // swerve.driverSwerve(driver.getX(Hand.kLeft), -driver.getY(Hand.kLeft),
-    // driver.getX(Hand.kRight), gyro.getAngle(), false);
+    // swerve.driverSwerve(
+    //   driver.getX(Hand.kLeft),
+    //   -driver.getY(Hand.kLeft),
+    //   driver.getX(Hand.kRight),
+    //   gyro.getAngle(),
+    //   false
+    // );
     // swerve.manualControl(0, driver.getX(Hand.kRight));
     // BR.setDrive(driver.getY(Hand.kLeft));
-    // BL.setDrive(driver.getY(Hand.kLeft));
+    BL.setDrive(driver.getY(Hand.kLeft));
 
   }
 
