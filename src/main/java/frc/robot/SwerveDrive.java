@@ -128,14 +128,14 @@ public class SwerveDrive {
 
 		double currentAngle = FR.getAngleEncoder() / FR.getEncPerDeg();
 
-		System.out.println(String.format("J: %3.2f \tA: %3.2f \t P: %3.2f", joystickA, wa2, currentAngle));
+		// System.out.println(String.format("J: %3.2f \tA: %3.2f \t P: %3.2f", joystickA, wa2, currentAngle));
 
 		// System.out.println(String.format("A: %3.2f", wa2));
         tmp = closestAngle(currentAngle, wa2);
 		// System.out.println(String.format("A: %3.2f", wa2));
 		// System.out.println("-------------");
 
-		System.out.println(String.format("J: %3.2f \tA: %3.2f \t P: %3.2f", joystickA, tmp.getTarget(), currentAngle));
+		// System.out.println(String.format("J: %3.2f \tA: %3.2f \t P: %3.2f", joystickA, tmp.getTarget(), currentAngle));
 
 		wa2 = tmp.getTarget();
 		ws2 *= tmp.getMotorScale();
@@ -157,8 +157,8 @@ public class SwerveDrive {
         // }
 
 
-		System.out.println(String.format("J: %3.2f \tA: %3.2f \t P: %3.2f", joystickA, wa2, currentAngle));
-		System.out.println("-------------");
+		// System.out.println(String.format("J: %3.2f \tA: %3.2f \t P: %3.2f", joystickA, wa2, currentAngle));
+		// System.out.println("-------------");
 
 		
 		FR.setDrive(ws2);
