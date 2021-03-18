@@ -65,7 +65,7 @@ public class Shooter {
     }
 
     public void setFeed(boolean feed){
-        feeder.set(feed ? 0.15 : 0);
+        feeder.set(feed ? 0.1 : 0);
     }
 
     public double getTargetAngle() {
