@@ -5,6 +5,7 @@
 package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.can.*;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.EncoderType;
@@ -16,13 +17,17 @@ import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
-import frc.robot.SwerveDrive;
-import frc.robot.SwerveModule;
 
 import com.kauailabs.navx.frc.AHRS;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.*;
+
+import frc.robot.logging.LoggableController;
+import frc.robot.logging.LoggableTimer;
+import frc.robot.logging.Logger;
+import frc.robot.SwerveDrive;
+import frc.robot.SwerveModule;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -41,6 +46,9 @@ public class Robot extends TimedRobot {
   SwerveModule BL;
   XboxController driver = null;
   XboxController operator = null;
+  Logger logger;
+  LoggableTimer timer;
+  LoggableController driver;
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -71,24 +79,43 @@ public class Robot extends TimedRobot {
     BR = new SwerveModule(new TalonFX(9), new WPI_TalonSRX(10));
     swerve = new SwerveDrive(FR, FL, BR, BL);
 
-    driver = new XboxController(0);
-    operator = new XboxController(1);
+    driver = new LoggableController("Driver", 0);
+    operator = new LoggableController("Operator", 1);
+
+    logger = new Logger();
+    timer = new LoggableTimer();
+
+    logger.addLoggable(timer);
+    logger.addLoggable(driver);
+    logger.addLoggable(operator);
   }
 
   @Override
   public void robotPeriodic() {
+    logger.log();
   }
 
   @Override
   public void autonomousInit() {
+    logger.open();
+    logger.setup();
+
+    timer.reset();
+    timer.start();
   }
 
   @Override
   public void autonomousPeriodic() {
+    logger.writeLine();
   }
 
   @Override
   public void teleopInit() {
+    logger.open();
+    logger.setup();
+
+    timer.reset();
+    timer.start();
   }
 
   @Override
@@ -127,10 +154,14 @@ public class Robot extends TimedRobot {
     // swerve.manualControl(0, driver.getX(Hand.kRight));
     // BR.setDrive(driver.getY(Hand.kLeft));
 
+    logger.writeLine();
   }
 
   @Override
   public void disabledInit() {
+    logger.close();
+
+    timer.stop();
   }
 
   @Override
