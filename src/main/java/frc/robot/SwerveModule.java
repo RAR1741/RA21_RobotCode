@@ -33,7 +33,7 @@ public class SwerveModule {
 
 		// angle.conficFa
 		angle.selectProfileSlot(0, 0);
-		angle.config_kP(0, 0.5);
+		angle.config_kP(0, 1);
 		angle.config_kI(0, 0);
 		angle.config_kD(0, 0);
 		angle.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 50);

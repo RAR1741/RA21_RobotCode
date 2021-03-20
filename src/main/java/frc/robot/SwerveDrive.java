@@ -60,7 +60,7 @@ public class SwerveDrive {
 		if((x!=0 || y!=0) || z!=0)
 		{
 			swerve(x, y, z, gyro, fieldOrient);
-			movecount = 20;
+			movecount = 30;
 		}
 		else
 		{
@@ -128,10 +128,11 @@ public class SwerveDrive {
 		wa1 = tmp.getTarget();
 		ws1 *= tmp.getMotorScale();
 
+		wa2 = 360 - wa2;
 		double joystickA = wa2;
 		// System.out.println(String.format("A: %3.2f", wa2));
         tmp = closestAngle(FR.getAngle(), wa2);
-		// wa2 = tmp.getTarget();
+		wa2 = tmp.getTarget();
 		ws2 *= tmp.getMotorScale();
 		// System.out.println(tmp.getMotorScale() == -1 ? "FLIPPED!" : "");
 		System.out.println(String.format("J: %3.2f \t tA: %3.2f \t cA: %3.2f \t E: %3.2f", joystickA, wa2, FR.getAngle()%360, FR.getAngleEncoder() ));
