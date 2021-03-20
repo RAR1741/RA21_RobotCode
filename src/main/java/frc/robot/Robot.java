@@ -71,11 +71,6 @@ public class Robot extends TimedRobot {
     BR = new SwerveModule(new TalonFX(9), new WPI_TalonSRX(10));
     swerve = new SwerveDrive(FR, FL, BR, BL);
 
-    FR.initMagEncoder(0); // TODO: Config center position
-    FL.initMagEncoder(0);
-    BR.initMagEncoder(0);
-    BL.initMagEncoder(0);
-
     driver = new XboxController(0);
     operator = new XboxController(1);
   }
@@ -126,6 +121,7 @@ public class Robot extends TimedRobot {
       gyro.getAngle(),
       false
     );
+    System.out.println(String.format("FR: %3.2f \t FL: %3.2f \t BR: %3.2f \t BL %3.2f", FR.getAngleEncoder(), FL.getAngleEncoder(), BR.getAngleEncoder(), BL.getAngleEncoder()));
     // FR.setAngle(180);
     // System.out.println(FR.getAngleEncoder());
     // swerve.manualControl(0, driver.getX(Hand.kRight));

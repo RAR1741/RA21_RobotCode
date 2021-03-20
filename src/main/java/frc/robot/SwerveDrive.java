@@ -33,6 +33,11 @@ public class SwerveDrive {
 		wa1 = 0.0;wa2 = 0.0;wa3 = 0.0;wa4 = 0.0;
 		max = 0.0;
 		movecount = 20;
+
+		FR.initMagEncoder(7438.0);
+		FL.initMagEncoder(534.0);
+		BR.initMagEncoder(3043.0);
+		BL.initMagEncoder(3921.0);
     }
 
     // Test Code
@@ -116,6 +121,11 @@ public class SwerveDrive {
 		if(wa3 < 0){wa3 += 360;}//wa3 = BR
 		if(wa4 < 0){wa4 += 360;}//wa4 = BL
 
+		wa1 = 360 - wa1;
+		wa2 = 360 - wa2;
+		wa3 = 360 - wa3;
+		wa4 = 360 - wa4;
+
         SwerveTarget tmp;
         // if((tmp = closestAngle(FR.getAngleEncoder()/FR.getEncPerDeg(), wa2)) != wa2 && ((tmp + 360)%360 != wa2 || (tmp - 360)%360 != wa2))
         // {
@@ -128,14 +138,13 @@ public class SwerveDrive {
 		wa1 = tmp.getTarget();
 		ws1 *= tmp.getMotorScale();
 
-		wa2 = 360 - wa2;
 		double joystickA = wa2;
 		// System.out.println(String.format("A: %3.2f", wa2));
         tmp = closestAngle(FR.getAngle(), wa2);
 		wa2 = tmp.getTarget();
 		ws2 *= tmp.getMotorScale();
 		// System.out.println(tmp.getMotorScale() == -1 ? "FLIPPED!" : "");
-		System.out.println(String.format("J: %3.2f \t tA: %3.2f \t cA: %3.2f \t E: %3.2f", joystickA, wa2, FR.getAngle()%360, FR.getAngleEncoder() ));
+		// System.out.println(String.format("J: %3.2f \t tA: %3.2f \t cA: %3.2f \t E: %3.2f", joystickA, wa2, FR.getAngle()%360, FR.getAngleEncoder() ));
 
 
 		tmp = closestAngle(BR.getAngle(), wa3);
@@ -168,9 +177,9 @@ public class SwerveDrive {
 
 		
 		FR.setDrive(ws2);
-		// FL.setDrive(-ws1);
-		// BR.setDrive(ws3);
-		// BL.setDrive(-ws4);
+		FL.setDrive(-ws1);
+		BR.setDrive(ws3);
+		BL.setDrive(-ws4);
 
 		// System.out.println("J: " + String.valueOf(wa2));
 		// System.out.println("A: " + String.valueOf(wa2));
@@ -178,9 +187,11 @@ public class SwerveDrive {
 		// System.out.println("");
 
 		FR.setAngle(wa2);
-		// FL.setAngle(wa1);
-		// BR.setAngle(wa3);
-		// BL.setAngle(wa4);
+		FL.setAngle(wa1);
+		BR.setAngle(wa3);
+		BL.setAngle(wa4);
+
+		// System.out.println(String.format("FR: %3.2f \t BR: %3.2f", FR.getAngleCurrent(), BR.getAngleCurrent()));
 	}
 	
 	public void setBrake()

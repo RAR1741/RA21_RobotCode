@@ -20,6 +20,7 @@ public class SwerveModule {
 
     // public static final double EncPerDeg = 1.0f * (12.0f / 1.0f) * (64.0f / 12.0f) / 360.0f;
 	public static final double EncPerDeg = 4096.0f / 360.0f;
+	private double angleOffset;
 	private TalonFX drive;
     // public CANSparkMax angle;
 	public TalonSRX angle;
@@ -40,6 +41,8 @@ public class SwerveModule {
 		//TODO: Reverse the direction the feedback sensor counts
 		// angle.setInverted(true); //Maybe this will work
 		// angle.configSelectedFeedbackCoefficient(-1);
+
+		// angleOffset = 0;
 	}
 
     public void setAngleDrive(double speed, double angle)
@@ -73,15 +76,19 @@ public class SwerveModule {
 	
 	public double getAngleEncoder()
 	{
-		return angle.getSensorCollection().getPulseWidthPosition();
+		return angle.getSensorCollection().getPulseWidthPosition() - angleOffset;
 		// return angle.getSelectedSensorPosition();
 	}
 
 	public void setAngle(double goal)
 	{
-		angle.set(ControlMode.Position, goal*EncPerDeg);
-		// angle.set(ControlMode.Position, 2048);
+		angle.set(ControlMode.Position, goal*EncPerDeg + angleOffset);
     }
+
+	public double getAngleCurrent()
+	{
+		return angle.getStatorCurrent();
+	}
 
     public double getDriveEnc()
 	{
@@ -102,12 +109,8 @@ public class SwerveModule {
         drive.setNeutralMode(NeutralMode.Coast);	
     }
 
-	public void initMagEncoder(int encoderCenter){
-		int pulseWidth = angle.getSensorCollection().getPulseWidthPosition();
-		pulseWidth -= encoderCenter;
-		pulseWidth %= 360;
-		if(pulseWidth < 0) pulseWidth += 360;
-		angle.getSensorCollection().setQuadraturePosition(pulseWidth, 50);
+	public void initMagEncoder(double encoderCenter){
+		angleOffset = encoderCenter;
 	}
 	
 }
