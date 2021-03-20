@@ -31,13 +31,15 @@ public class SwerveModule {
 
         drive.setNeutralMode(NeutralMode.Brake);
 
+		// angle.conficFa
 		angle.selectProfileSlot(0, 0);
-		angle.config_kP(0, 1);
+		angle.config_kP(0, 0.5);
 		angle.config_kI(0, 0);
 		angle.config_kD(0, 0);
-		angle.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 50);
+		angle.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 50);
 		//TODO: Reverse the direction the feedback sensor counts
-		angle.setInverted(true); //Maybe this will work
+		// angle.setInverted(true); //Maybe this will work
+		// angle.configSelectedFeedbackCoefficient(-1);
 	}
 
     public void setAngleDrive(double speed, double angle)
@@ -72,12 +74,13 @@ public class SwerveModule {
 	public double getAngleEncoder()
 	{
 		return angle.getSensorCollection().getPulseWidthPosition();
-
+		// return angle.getSelectedSensorPosition();
 	}
 
 	public void setAngle(double goal)
 	{
 		angle.set(ControlMode.Position, goal*EncPerDeg);
+		// angle.set(ControlMode.Position, 2048);
     }
 
     public double getDriveEnc()

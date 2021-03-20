@@ -133,7 +133,7 @@ public class SwerveDrive {
         tmp = closestAngle(FR.getAngle(), wa2);
 		// wa2 = tmp.getTarget();
 		ws2 *= tmp.getMotorScale();
-		System.out.println(tmp.getMotorScale() == -1 ? "FLIPPED!" : "");
+		// System.out.println(tmp.getMotorScale() == -1 ? "FLIPPED!" : "");
 		System.out.println(String.format("J: %3.2f \t tA: %3.2f \t cA: %3.2f \t E: %3.2f", joystickA, wa2, FR.getAngle()%360, FR.getAngleEncoder() ));
 
 

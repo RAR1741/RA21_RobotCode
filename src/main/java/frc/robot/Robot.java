@@ -65,8 +65,8 @@ public class Robot extends TimedRobot {
     gyro = new AHRS(SPI.Port.kMXP);
     gyro.enableLogging(false);
 
-    BL = new SwerveModule(new TalonFX(3), new WPI_TalonSRX(4));
-    FR = new SwerveModule(new TalonFX(5), new WPI_TalonSRX(6));
+    BL = new SwerveModule(new TalonFX(3), new WPI_TalonSRX(6));
+    FR = new SwerveModule(new TalonFX(5), new WPI_TalonSRX(4));
     FL = new SwerveModule(new TalonFX(7), new WPI_TalonSRX(8));
     BR = new SwerveModule(new TalonFX(9), new WPI_TalonSRX(10));
     swerve = new SwerveDrive(FR, FL, BR, BL);
@@ -126,6 +126,8 @@ public class Robot extends TimedRobot {
       gyro.getAngle(),
       false
     );
+    // FR.setAngle(180);
+    // System.out.println(FR.getAngleEncoder());
     // swerve.manualControl(0, driver.getX(Hand.kRight));
     // BR.setDrive(driver.getY(Hand.kLeft));
 
