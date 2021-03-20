@@ -42,7 +42,7 @@ public class SwerveModule {
 		// angle.setInverted(true); //Maybe this will work
 		// angle.configSelectedFeedbackCoefficient(-1);
 
-		// angleOffset = 0;
+		angleOffset = 0;
 	}
 
     public void setAngleDrive(double speed, double angle)
