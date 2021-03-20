@@ -44,11 +44,11 @@ public class Robot extends TimedRobot {
   SwerveModule FL;
   SwerveModule BR;
   SwerveModule BL;
-  XboxController driver = null;
-  XboxController operator = null;
+  LoggableController driver;
+  LoggableController operator;
   Logger logger;
   LoggableTimer timer;
-  LoggableController driver;
+  
 
   /**
    * This function is run when the robot is first started up and should be used
