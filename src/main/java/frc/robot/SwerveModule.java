@@ -1,13 +1,5 @@
 package frc.robot;
 
-import com.revrobotics.AlternateEncoderType;
-import com.revrobotics.CANEncoder;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.ControlType;
-import com.revrobotics.CANSparkMax.IdleMode;
-
-import edu.wpi.first.wpilibj.*;
-
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -53,7 +45,7 @@ public class SwerveModule {
             speed = -speed;
         }
     }
-    
+
     public double getTurnSpeed()
     {
         return angle.getSelectedSensorVelocity();
@@ -73,7 +65,7 @@ public class SwerveModule {
     {
         drive.set(TalonFXControlMode.Velocity, speed * 2048.0 / 600.0);
     }
-    
+
     public double getAngleEncoder()
     {
         return angle.getSensorCollection().getPulseWidthPosition() - angleOffset;
@@ -99,18 +91,18 @@ public class SwerveModule {
         return getAngleEncoder()/EncPerDeg;
     }
 
-    public void setBrake() 
+    public void setBrake()
     {
         drive.setNeutralMode(NeutralMode.Brake);
     }
-    
+
     public void setCoast()
     {
-        drive.setNeutralMode(NeutralMode.Coast);    
+        drive.setNeutralMode(NeutralMode.Coast);
     }
 
     public void initMagEncoder(double encoderCenter){
         angleOffset = encoderCenter;
     }
-    
+
 }

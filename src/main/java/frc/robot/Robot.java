@@ -4,30 +4,16 @@
 
 package frc.robot;
 
-import com.ctre.phoenix.motorcontrol.can.*;
-
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANEncoder;
-import com.revrobotics.EncoderType;
-import com.revrobotics.AlternateEncoderType;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-
-import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.GenericHID.Hand;
-
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.kauailabs.navx.frc.AHRS;
 
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.can.*;
-
+import edu.wpi.first.wpilibj.GenericHID.Hand;
+import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.TimedRobot;
 import frc.robot.logging.LoggableController;
 import frc.robot.logging.LoggableTimer;
 import frc.robot.logging.Logger;
-import frc.robot.SwerveDrive;
-import frc.robot.SwerveModule;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -48,7 +34,7 @@ public class Robot extends TimedRobot {
   LoggableController operator;
   Logger logger;
   LoggableTimer timer;
-  
+
 
   /**
    * This function is run when the robot is first started up and should be used
