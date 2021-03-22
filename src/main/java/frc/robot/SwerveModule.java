@@ -30,7 +30,6 @@ public class SwerveModule {
         angle.config_kI(0, 0);
         angle.config_kD(0, 0);
         angle.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 50);
-        //TODO: Reverse the direction the feedback sensor counts
         // angle.setInverted(true); //Maybe this will work
         // angle.configSelectedFeedbackCoefficient(-1);
 
