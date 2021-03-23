@@ -183,10 +183,12 @@ public class SwerveDrive {
             ws4 /= maxPower;
         }
 
-        FR.setDrive(ws2);
-        FL.setDrive(-ws1);
-        BR.setDrive(ws3);
-        BL.setDrive(-ws4);
+        double scaleSpeed = 0.5;
+
+        FR.setDrive(ws2 * scaleSpeed);
+        FL.setDrive(-ws1 * scaleSpeed);
+        BR.setDrive(ws3 * scaleSpeed);
+        BL.setDrive(-ws4 * scaleSpeed);
 
         // System.out.println("J: " + String.valueOf(wa2));
         // System.out.println("A: " + String.valueOf(wa2));

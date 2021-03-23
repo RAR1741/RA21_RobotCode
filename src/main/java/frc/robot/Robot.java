@@ -132,7 +132,7 @@ public class Robot extends TimedRobot {
       -driver.getY(Hand.kLeft),
       driver.getX(Hand.kRight),
       gyro.getAngle(),
-      false
+      true
     );
     System.out.println(String.format("FR: %3.2f \t FL: %3.2f \t BR: %3.2f \t BL %3.2f", FR.getAngleEncoder(), FL.getAngleEncoder(), BR.getAngleEncoder(), BL.getAngleEncoder()));
     // FR.setAngle(180);
