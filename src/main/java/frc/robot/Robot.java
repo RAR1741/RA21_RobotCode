@@ -106,27 +106,6 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    // if (driver.getAButtonPressed()){FR.setAngle(90);}
-    // if (driver.getAButtonPressed()){FR.setAngle((FR.getAngleEncoder() /
-    // FR.EncPerDeg) + 90);}
-    // System.out.println("FR Current Angle: " + String.valueOf(FR.getAngleEncoder()
-    // / FR.EncPerDeg));
-    // System.out.println(FR.angle.getEncoder().getCountsPerRevolution());
-    // System.out.println(FR.angle.getEncoder(EncoderType.kHallSensor,
-    // 1).getPosition());
-    // if (FR.angle.getOutputCurrent()>1)
-    // System.out.println(FR.angle.getOutputCurrent());
-
-    // Talon SRX test code
-    // int pulseWidth = _talon.getSensorCollection().getPulseWidthPosition();
-    // System.out.println(pulseWidth);
-
-    // Spark max test code
-    // System.out.println(frMotor.getAlternateEncoder(AlternateEncoderType.kQuadrature,
-    // 4096).getPosition());
-    // https://www.chiefdelphi.com/t/using-the-vex-srx-mag-encoders-with-spark-max/376261/13
-
-    // ACTUAL CODE
     swerve.driverSwerve(
       driver.getX(Hand.kLeft),
       -driver.getY(Hand.kLeft),
@@ -134,11 +113,6 @@ public class Robot extends TimedRobot {
       gyro.getAngle(),
       true
     );
-    System.out.println(String.format("FR: %3.2f \t FL: %3.2f \t BR: %3.2f \t BL %3.2f", FR.getAngleEncoder(), FL.getAngleEncoder(), BR.getAngleEncoder(), BL.getAngleEncoder()));
-    // FR.setAngle(180);
-    // System.out.println(FR.getAngleEncoder());
-    // swerve.manualControl(0, driver.getX(Hand.kRight));
-    // BR.setDrive(driver.getY(Hand.kLeft));
 
     logger.writeLine();
   }
