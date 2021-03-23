@@ -14,11 +14,11 @@ public class LoggableController extends XboxController implements Loggable {
     public void setupLogging(Logger logger) {
         logger.addAttribute(name+"/LeftX");
     }
-    
+
     @Override
     public void log(Logger logger) {
         logger.log(name+"/LeftX", this.getX(Hand.kLeft));
-                
+
     }
-    
+
 }
