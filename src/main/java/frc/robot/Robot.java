@@ -45,10 +45,10 @@ public class Robot extends TimedRobot {
 
     // Drive Train:
     // Back left drive - 3
-    // Back left angle - 4
+    // Back left angle - 6
     // ---------------------
     // Front right drive - 5
-    // Front right angle - 6
+    // Front right angle - 4
     // ---------------------
     // Front left drive - 7
     // Front left angle - 8
