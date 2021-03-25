@@ -23,7 +23,6 @@ import frc.robot.logging.Logger;
  * project.
  */
 public class Robot extends TimedRobot {
-
   AHRS gyro;
   SwerveDrive swerve;
   SwerveModule FR;
@@ -34,7 +33,17 @@ public class Robot extends TimedRobot {
   LoggableController operator;
   Logger logger;
   LoggableTimer timer;
+  
+  private static final double DEADBAND_LIMIT = 0.01;
+  private static final double SPEED_CAP = 1.0; //TODO: Determine Speed Cap
+  InputScaler joystickDeadband = new Deadband(DEADBAND_LIMIT);
+  InputScaler joystickSquared = new SquaredInput(DEADBAND_LIMIT);
+  BoostInput boost = new BoostInput(SPEED_CAP);
 
+  public double deadband(double in) {
+    double out = joystickSquared.scale(in);
+    return joystickDeadband.scale(out);
+  }
 
   /**
    * This function is run when the robot is first started up and should be used
