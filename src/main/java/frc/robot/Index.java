@@ -1,21 +1,19 @@
 package frc.robot;
 
 import com.revrobotics.CANSparkMax;
+import edu.wpi.first.wpilibj.DigitalInput;
 
 public class Index {
     public CANSparkMax belt;
-    public CANSparkMax angle;
+    public DigitalInput finalIndex;
 
-    public Index(CANSparkMax  b, CANSparkMax a) {
+    public Index(CANSparkMax  b, DigitalInput f) {
         belt = b;
-        angle = a;
+
+        finalIndex = f;
     }
 
     public void setIndexSpeed(double speed) {
         belt.set(speed);
-    }
-
-    public void setAngleSpeed(double speed) {
-        angle.set(speed);
     }
 }

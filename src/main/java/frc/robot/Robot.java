@@ -10,6 +10,7 @@ import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.TimedRobot;
 import frc.robot.logging.LoggableController;
@@ -74,8 +75,7 @@ public class Robot extends TimedRobot {
     }
 
     if (enableIndex) {
-      index = new Index(new CANSparkMax(11, MotorType.kBrushless),
-          new CANSparkMax(13, MotorType.kBrushless));
+      index = new Index(new CANSparkMax(11, MotorType.kBrushless), new DigitalInput(0));
     }
 
     driver = new LoggableController("Driver", 0);
