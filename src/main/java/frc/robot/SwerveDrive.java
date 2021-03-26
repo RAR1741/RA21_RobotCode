@@ -9,6 +9,7 @@ public class SwerveDrive {
     private double ws1,ws2,ws3,ws4;
     private double wa1,wa2,wa3,wa4;
     private double max;
+    private double scaleSpeed = 0.5;
     private int moveCount;
 
     private SwerveModule FR;
@@ -63,6 +64,43 @@ public class SwerveDrive {
         if((x!=0 || y!=0) || z!=0)
         {
             swerve(x, y, z, gyro, fieldOrient);
+
+            SwerveTarget tmp;
+            tmp = closestAngle(FL.getAngle(), wa1);
+            wa1 = tmp.getTarget();
+            ws1 *= tmp.getMotorScale();
+
+            tmp = closestAngle(FR.getAngle(), wa2);
+            wa2 = tmp.getTarget();
+            ws2 *= tmp.getMotorScale();
+
+            tmp = closestAngle(BR.getAngle(), wa3);
+            wa3 = tmp.getTarget();
+            ws3 *= tmp.getMotorScale();
+
+            tmp = closestAngle(BL.getAngle(), wa4);
+            wa4 = tmp.getTarget();
+            ws4 *= tmp.getMotorScale();
+
+            double maxPower = Math.max(Math.abs(ws1),Math.max(Math.abs(ws2), Math.max(Math.abs(ws3), Math.abs(ws4))));
+            if(maxPower > 1.0)
+            {
+                ws1 /= maxPower;
+                ws2 /= maxPower;
+                ws3 /= maxPower;
+                ws4 /= maxPower;
+            }
+
+            FR.setDrive(ws2 * scaleSpeed);
+            FL.setDrive(-ws1 * scaleSpeed);
+            BR.setDrive(ws3 * scaleSpeed);
+            BL.setDrive(-ws4 * scaleSpeed);
+
+            FR.setAngle(wa2);
+            FL.setAngle(wa1);
+            BR.setAngle(wa3);
+            BL.setAngle(wa4);
+
             moveCount = 30;
         }
         else
@@ -123,56 +161,6 @@ public class SwerveDrive {
         wa2 = 360 - wa2;
         wa3 = 360 - wa3;
         wa4 = 360 - wa4;
-
-        SwerveTarget tmp;
-        // if((tmp = closestAngle(FR.getAngleEncoder()/FR.getEncPerDeg(), wa2)) != wa2 && ((tmp + 360)%360 != wa2 || (tmp - 360)%360 != wa2))
-        // {
-        //     System.out.println("FLIPPED");
-        //     wa2 = tmp;
-        //     ws2 *= -1;
-        // }
-
-        tmp = closestAngle(FL.getAngle(), wa1);
-        wa1 = tmp.getTarget();
-        ws1 *= tmp.getMotorScale();
-
-        // double joystickA = wa2;
-        // System.out.println(String.format("A: %3.2f", wa2));
-        tmp = closestAngle(FR.getAngle(), wa2);
-        wa2 = tmp.getTarget();
-        ws2 *= tmp.getMotorScale();
-        // System.out.println(tmp.getMotorScale() == -1 ? "FLIPPED!" : "");
-        // System.out.println(String.format("J: %3.2f \t tA: %3.2f \t cA: %3.2f \t E: %3.2f", joystickA, wa2, FR.getAngle()%360, FR.getAngleEncoder() ));
-
-
-        tmp = closestAngle(BR.getAngle(), wa3);
-        wa3 = tmp.getTarget();
-        ws3 *= tmp.getMotorScale();
-
-
-        tmp = closestAngle(BL.getAngle(), wa4);
-        wa4 = tmp.getTarget();
-        ws4 *= tmp.getMotorScale();
-        // if((tmp = closestAngle(FL.getAngleEncoder()/FL.getEncPerDeg(), wa1)) != wa1)
-        // {
-        //     wa1 = tmp;
-        //     ws1 *= -1;
-        // }
-        // if((tmp = closestAngle(BR.getAngleEncoder()/BR.getEncPerDeg(), wa3)) != wa3)
-        // {
-        //     wa3 = tmp;
-        //     ws3 *= -1;
-        // }
-        // if((tmp = closestAngle(BL.getAngleEncoder()/BL.getEncPerDeg(), wa4)) != wa4)
-        // {
-        //     wa4 = tmp;
-        //     ws4 *= -1;
-        // }
-
-
-        // System.out.println(String.format("J: %3.2f \tA: %3.2f \t P: %3.2f", joystickA, wa2, currentAngle));
-        // System.out.println("-------------");
-
 
         double maxPower = Math.max(Math.abs(ws1),Math.max(Math.abs(ws2), Math.max(Math.abs(ws3), Math.abs(ws4))));
         if(maxPower > 1.0)
