@@ -10,6 +10,7 @@ import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
+import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -125,7 +126,13 @@ public class Robot extends TimedRobot {
     }
 
     if (enableIndex) {
-      index.setIndexSpeed(operator.getY(Hand.kLeft));
+      // index.setIndexSpeed(operator.getY(Hand.kLeft));
+      if (operator.getBButton()) {
+        index.indexUntilLoaded();
+      } else {
+        index.setIndexSpeed(0);
+      }
+      // System.out.println(index.getFinalIndex());
     }
 
     logger.writeLine();
