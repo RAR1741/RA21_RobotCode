@@ -11,62 +11,165 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.kauailabs.navx.frc.AHRS;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
+import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.TimedRobot;
+import frc.robot.logging.LoggableController;
+import frc.robot.logging.LoggableTimer;
+import frc.robot.logging.Logger;
 
 /**
- * The VM is configured to automatically run this class, and to call the functions corresponding to
- * each mode, as described in the TimedRobot documentation. If you change the name of this class or
- * the package after creating this project, you must also update the build.gradle file in the
+ * The VM is configured to automatically run this class, and to call the
+ * functions corresponding to each mode, as described in the TimedRobot
+ * documentation. If you change the name of this class or the package after
+ * creating this project, you must also update the build.gradle file in the
  * project.
  */
 public class Robot extends TimedRobot {
-  /**
-   * This function is run when the robot is first started up and should be used for any
-   * initialization code.
-   */
+
+  Boolean enableDrivetrain = false;
+  Boolean enableShooter = false;
+  Boolean enableIndex = true;
+
+  AHRS gyro;
 
   Shooter shooter;
-  XboxController driver = null;
-  XboxController operator = null;
+
+  Index index;
+
+  SwerveDrive swerve;
+  SwerveModule FR;
+  SwerveModule FL;
+  SwerveModule BR;
+  SwerveModule BL;
+
+  LoggableController driver;
+  LoggableController operator;
+
+  Logger logger;
+  LoggableTimer timer;
+
+
+  /**
+   * This function is run when the robot is first started up and should be used
+   * for any initialization code.
+   */
 
   @Override
   public void robotInit() {
 
-    shooter = new Shooter(new TalonFX(14), new CANSparkMax(11, MotorType.kBrushless), new CANSparkMax(13, MotorType.kBrushless));
+    // ---------------------
+    // Front left drive - 7
+    // Front left angle - 8
+    // ---------------------
+    // Back right drive - 9
+    // Back right angle - 10
 
-    driver = new XboxController(0);
-    operator = new XboxController(1);
+    gyro = new AHRS(SPI.Port.kMXP);
+    gyro.enableLogging(false);
+
+    if (enableShooter) {
+    shooter = new Shooter(new TalonFX(14), new CANSparkMax(11, MotorType.kBrushless),
+        new CANSparkMax(13, MotorType.kBrushless));
+    }
+
+    if (enableDrivetrain) {
+      BL = new SwerveModule(new TalonFX(3), new WPI_TalonSRX(6));
+      FR = new SwerveModule(new TalonFX(5), new WPI_TalonSRX(4));
+      FL = new SwerveModule(new TalonFX(7), new WPI_TalonSRX(8));
+      BR = new SwerveModule(new TalonFX(9), new WPI_TalonSRX(10));
+      swerve = new SwerveDrive(FR, FL, BR, BL);
+    }
+
+    if (enableIndex) {
+      index = new Index(new CANSparkMax(11, MotorType.kBrushless), new DigitalInput(0));
+    }
+
+    driver = new LoggableController("Driver", 0);
+    operator = new LoggableController("Operator", 1);
+
+    logger = new Logger();
+    timer = new LoggableTimer();
+
+    logger.addLoggable(timer);
+    logger.addLoggable(driver);
+    logger.addLoggable(operator);
   }
 
   @Override
-  public void robotPeriodic() {}
+  public void robotPeriodic() {
+    logger.log();
+  }
 
   @Override
-  public void autonomousInit() {}
+  public void autonomousInit() {
+    logger.open();
+    logger.setup();
+
+    timer.reset();
+    timer.start();
+  }
 
   @Override
-  public void autonomousPeriodic() {}
+  public void autonomousPeriodic() {
+    logger.writeLine();
+  }
 
   @Override
-  public void teleopInit() {}
+  public void teleopInit() {
+    logger.open();
+    logger.setup();
+
+    timer.reset();
+    timer.start();
+  }
 
   @Override
   public void teleopPeriodic() {
 
-    shooter.manualControl(Math.abs(driver.getY(Hand.kLeft)) > 0.05 ? driver.getY(Hand.kLeft) : 0,
-     Math.abs(driver.getY(Hand.kRight)) > 0.05 ? driver.getY(Hand.kRight) : 0);
-    shooter.setFeed(driver.getAButton());
+    if (enableShooter) {
+      shooter.manualControl(Math.abs(driver.getY(Hand.kLeft)) > 0.05 ? driver.getY(Hand.kLeft) : 0,
+          Math.abs(driver.getY(Hand.kRight)) > 0.05 ? driver.getY(Hand.kRight) : 0);
+      shooter.setFeed(driver.getAButton());
+    }
 
+    if (enableDrivetrain) {
+      swerve.driverSwerve(driver.getX(Hand.kLeft), -driver.getY(Hand.kLeft),
+          driver.getX(Hand.kRight), gyro.getAngle(), true);
+    }
+
+    if (enableIndex) {
+      if (operator.getBButtonPressed()) {
+        index.startLoading();
+      }
+    }
+
+    index.update();
+    logger.writeLine();
   }
 
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    logger.close();
+
+    timer.stop();
+  }
 
   @Override
-  public void disabledPeriodic() {}
+  public void disabledPeriodic() {
+  }
 
   @Override
-  public void testInit() {}
+  public void testInit() {
+  }
 
   @Override
-  public void testPeriodic() {}
+  public void testPeriodic() {
+  }
 }
