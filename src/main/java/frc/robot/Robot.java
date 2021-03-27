@@ -134,7 +134,6 @@ public class Robot extends TimedRobot {
     if (enableShooter) {
       shooter.manualControl(Math.abs(driver.getY(Hand.kLeft)) > 0.05 ? driver.getY(Hand.kLeft) : 0,
           Math.abs(driver.getY(Hand.kRight)) > 0.05 ? driver.getY(Hand.kRight) : 0);
-      shooter.setFeed(driver.getAButton());
     }
 
     if (enableDrivetrain) {

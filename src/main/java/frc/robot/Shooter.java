@@ -9,135 +9,133 @@ import com.revrobotics.CANSparkMax.IdleMode;
 
 public class Shooter {
 
-    //TODO: Determine values
-    static final double EncPerDeg = 1.0f * 360.0f;
-    private static final double HOMING_SPEED_DOWN = -0.3; // Speed at which we seek downward during homing
-    private static final double HOME_POSITION = 0.0; // Angle at lower limit switch
-    private static final double POSITION_TOLERANCE = 0.05; // Limit of being "close enough" on the angle
+  // TODO: Determine values
+  static final double EncPerDeg = 1.0f * 360.0f;
+  private static final double HOMING_SPEED_DOWN = -0.3; // Speed at which we seek downward during
+                                                        // homing
+  private static final double HOME_POSITION = 0.0; // Angle at lower limit switch
+  private static final double POSITION_TOLERANCE = 0.05; // Limit of being "close enough" on the
+                                                         // angle
 
-    TalonFX shooter;
-    CANSparkMax angle;
+  TalonFX shooter;
+  CANSparkMax angle;
 
-    private double targetAngle;
+  private double targetAngle;
 
-    public enum State {
-      HomingDown, Idle, MovingToAngle, ManualControl
-    }
+  public enum State {
+    HomingDown, Idle, MovingToAngle, ManualControl
+  }
 
-    private State state;
+  private State state;
 
-    Shooter(TalonFX shooter, CANSparkMax angle){
-        this.shooter = shooter;
-        this.angle = angle;
+  Shooter(TalonFX shooter, CANSparkMax angle) {
+    this.shooter = shooter;
+    this.angle = angle;
 
-        angle.getPIDController().setP(0.1);
-        angle.getPIDController().setI(0.0);
-        angle.getPIDController().setD(0.0);
-        angle.getPIDController().setFeedbackDevice(angle.getEncoder());
-        angle.setIdleMode(IdleMode.kBrake);
+    angle.getPIDController().setP(0.1);
+    angle.getPIDController().setI(0.0);
+    angle.getPIDController().setD(0.0);
+    angle.getPIDController().setFeedbackDevice(angle.getEncoder());
+    angle.setIdleMode(IdleMode.kBrake);
 
-        state = State.Idle;
-    }
+    state = State.Idle;
+  }
 
-    /**
-     * Sets motor power.
-     *
-     * @param power the power at which the shooter spins.
-     */
-    public void manualControl(double power, double angleMotorPower) {
-        state = State.ManualControl;
-        setPower(power*0.5);
-        angle.set(angleMotorPower*0.05);
-    }
+  /**
+   * Sets motor power.
+   *
+   * @param power the power at which the shooter spins.
+   */
+  public void manualControl(double power, double angleMotorPower) {
+    state = State.ManualControl;
+    setPower(power * 0.5);
+    angle.set(angleMotorPower * 0.05);
+  }
 
-    public void setPower(double power){
-        shooter.set(ControlMode.PercentOutput, power);
-    }
+  public void setPower(double power) {
+    shooter.set(ControlMode.PercentOutput, power);
+  }
 
-    public void setSpeed(double rpm){
-        shooter.set(ControlMode.Velocity, rpm);
-    }
+  public void setSpeed(double rpm) {
+    shooter.set(ControlMode.Velocity, rpm);
+  }
 
-    public double getSpeed(){
-        return shooter.getSelectedSensorVelocity();
-    }
+  public double getSpeed() {
+    return shooter.getSelectedSensorVelocity();
+  }
 
-    public void setFeed(boolean feed){
-        feeder.set(feed ? 0.1 : 0);
-    }
+  public double getTargetAngle() {
+    return targetAngle;
+  }
 
-    public double getTargetAngle() {
-        return targetAngle;
-      }
+  public boolean onTarget() {
+    double error = angle.getEncoder().getPosition() - targetAngle;
+    return Math.abs(error) < POSITION_TOLERANCE;
+  }
 
-      public boolean onTarget() {
-        double error = angle.getEncoder().getPosition() - targetAngle;
-        return Math.abs(error) < POSITION_TOLERANCE;
-      }
+  /**
+   * Run main state machine for semi-autonomous control of the robot.
+   */
+  public void update() {
+    switch (state) {
+      case HomingDown:
+        angle.set(HOMING_SPEED_DOWN);
 
-      /**
-       * Run main state machine for semi-autonomous control of the robot.
-       */
-      public void update() {
-        switch (state) {
-          case HomingDown:
-            angle.set(HOMING_SPEED_DOWN);
-
-            if (angle.getReverseLimitSwitch(LimitSwitchPolarity.kNormallyOpen).get()) {
-              // We've reached the lower limit of the screw assembly, we're now at a
-              // known position. Set the absolute position to the encoder so we can deal
-              // with easier units.
-              angle.set(0);
-              angle.getEncoder().setPosition(HOME_POSITION);
-              state = State.Idle;
-            }
-            break;
-          case Idle:
-            // Idle!
-            break;
-          case MovingToAngle:
-            if (onTarget()) {
-              state = State.Idle;
-            }
-            break;
-          case ManualControl:
-            // Nothing
-            break;
+        if (angle.getReverseLimitSwitch(LimitSwitchPolarity.kNormallyOpen).get()) {
+          // We've reached the lower limit of the screw assembly, we're now at a
+          // known position. Set the absolute position to the encoder so we can deal
+          // with easier units.
+          angle.set(0);
+          angle.getEncoder().setPosition(HOME_POSITION);
+          state = State.Idle;
         }
-      }
-
-      public void reHome() {
-        state = State.HomingDown;
-      }
-
-    public void setAnglePower(double power){
-        angle.set(power);
+        break;
+      case Idle:
+        // Idle!
+        break;
+      case MovingToAngle:
+        if (onTarget()) {
+          state = State.Idle;
+        }
+        break;
+      case ManualControl:
+        // Nothing
+        break;
     }
+  }
 
-    /**
-     * Sets angle motor to a specified angle
-     *
-     * @param degrees degrees to which the angle motor will be turned.
-     */
-    public void setAngle(double degrees) {
-        state = State.MovingToAngle;
-        targetAngle = degrees;
-        angle.getPIDController().setReference(targetAngle, ControlType.kPosition);
-    }
+  public void reHome() {
+    state = State.HomingDown;
+  }
 
-    public double getAngle(){
-        return angle.getEncoder().getPosition() / EncPerDeg;
-    }
+  public void setAnglePower(double power) {
+    angle.set(power);
+  }
 
-    public boolean getReverseLimit() {
-        return angle.getReverseLimitSwitch(LimitSwitchPolarity.kNormallyOpen).get();
-    }
+  /**
+   * Sets angle motor to a specified angle
+   *
+   * @param degrees degrees to which the angle motor will be turned.
+   */
+  public void setAngle(double degrees) {
+    state = State.MovingToAngle;
+    targetAngle = degrees;
+    angle.getPIDController().setReference(targetAngle, ControlType.kPosition);
+  }
 
-    public boolean getForwardLimit() {
-        return angle.getForwardLimitSwitch(LimitSwitchPolarity.kNormallyOpen).get();
-    }
+  public double getAngle() {
+    return angle.getEncoder().getPosition() / EncPerDeg;
+  }
 
-    public State getState() {
-        return state;
-    }
+  public boolean getReverseLimit() {
+    return angle.getReverseLimitSwitch(LimitSwitchPolarity.kNormallyOpen).get();
+  }
+
+  public boolean getForwardLimit() {
+    return angle.getForwardLimitSwitch(LimitSwitchPolarity.kNormallyOpen).get();
+  }
+
+  public State getState() {
+    return state;
+  }
 }
