@@ -7,8 +7,11 @@ package frc.robot;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.kauailabs.navx.frc.AHRS;
-
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
+import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.TimedRobot;
 import frc.robot.logging.LoggableController;
@@ -24,7 +27,12 @@ import frc.robot.logging.Logger;
  */
 public class Robot extends TimedRobot {
 
+  Boolean enableDrivetrain = false;
+  Boolean enableShooter = false;
+  Boolean enableIndex = true;
+
   AHRS gyro;
+  Index index;
   SwerveDrive swerve;
   SwerveModule FR;
   SwerveModule FL;
@@ -59,11 +67,17 @@ public class Robot extends TimedRobot {
     gyro = new AHRS(SPI.Port.kMXP);
     gyro.enableLogging(false);
 
-    BL = new SwerveModule(new TalonFX(3), new WPI_TalonSRX(6));
-    FR = new SwerveModule(new TalonFX(5), new WPI_TalonSRX(4));
-    FL = new SwerveModule(new TalonFX(7), new WPI_TalonSRX(8));
-    BR = new SwerveModule(new TalonFX(9), new WPI_TalonSRX(10));
-    swerve = new SwerveDrive(FR, FL, BR, BL);
+    if (enableDrivetrain) {
+      BL = new SwerveModule(new TalonFX(3), new WPI_TalonSRX(6));
+      FR = new SwerveModule(new TalonFX(5), new WPI_TalonSRX(4));
+      FL = new SwerveModule(new TalonFX(7), new WPI_TalonSRX(8));
+      BR = new SwerveModule(new TalonFX(9), new WPI_TalonSRX(10));
+      swerve = new SwerveDrive(FR, FL, BR, BL);
+    }
+
+    if (enableIndex) {
+      index = new Index(new CANSparkMax(11, MotorType.kBrushless), new DigitalInput(0));
+    }
 
     driver = new LoggableController("Driver", 0);
     operator = new LoggableController("Operator", 1);
@@ -106,14 +120,18 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    swerve.driverSwerve(
-      driver.getX(Hand.kLeft),
-      -driver.getY(Hand.kLeft),
-      driver.getX(Hand.kRight),
-      gyro.getAngle(),
-      true
-    );
+    if (enableDrivetrain) {
+      swerve.driverSwerve(driver.getX(Hand.kLeft), -driver.getY(Hand.kLeft),
+          driver.getX(Hand.kRight), gyro.getAngle(), true);
+    }
 
+    if (enableIndex) {
+      if (operator.getBButtonPressed()) {
+        index.startLoading();
+      }
+    }
+
+    index.update();
     logger.writeLine();
   }
 
