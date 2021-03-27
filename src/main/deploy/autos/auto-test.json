@@ -1,0 +1,32 @@
+{
+    "auto": [
+        {
+            "type": "drive",
+            "unit": "Seconds",
+            "amount": 1,
+            "args": [
+                0,
+                0.4,
+                0
+            ]
+        },
+        {
+            "type": "turgDeg",
+            "unit": "Degrees",
+            "amount": 90,
+            "args": [
+                0.2
+            ]
+        },
+        {
+            "type": "drive-fo",
+            "unit": "Seconds",
+            "amount": 2,
+            "args": [
+                0,
+                0.3,
+                0.2
+            ]
+        }
+    ]
+}
