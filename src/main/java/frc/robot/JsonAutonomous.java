@@ -19,6 +19,8 @@ import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.Timer;
 
 public class JsonAutonomous extends Autonomous{
+    private final static double TICKS_PER_ROTATION = 1; //TODO: Get values
+    private final static double TICKS_PER_INCH = 1;
     private JsonElement auto;
     private List<AutoInstruction> instructions;
     private int step;
@@ -137,13 +139,63 @@ public class JsonAutonomous extends Autonomous{
     {
         if(Math.abs(swerve.getEncoder()-start) < d)
         {
-            swerve.swerve(x, y, z, getAngle() + navxStart, fieldOrient);
+            swerve.swerve(x, y, z, getAngle() - navxStart, fieldOrient);
         }
         else
         {
             return true;
         }
         return false;
+    }
+
+    private boolean rotateDegrees(double speed, double deg, boolean fieldOrient)
+    {
+        if(Math.abs(getAngle()-navxStart-deg) < 0.5) { return true; }
+        swerve.swerve(0, 0, speed, getAngle(), fieldOrient);
+        return false;
+    }
+
+    public void wait(AutoInstruction ai)
+    {
+        if(timer.get() >= ai.args.get(0))
+        {
+            reset();
+        }
+    }
+
+    public void turnDegrees(AutoInstruction ai, boolean fieldOrient)
+    {
+        if(rotateDegrees(ai.args.get(0), ai.amount, fieldOrient))
+        {
+            swerve.swerve(0, 0, 0, getAngle()-navxStart, false);
+            reset();
+        }
+    }
+
+    public void drive(AutoInstruction ai, boolean fieldOrient)
+    {
+        AutoInstruction.Unit u = ai.unit;
+        if(u.equals(AutoInstruction.Unit.Seconds) || u.equals(AutoInstruction.Unit.Milliseconds))
+        {
+            if(driveTime(ai.args.get(0), ai.args.get(1), ai.args.get(2), (u.equals(AutoInstruction.Unit.Seconds) ? ai.amount : ai.amount/1000.0), fieldOrient))
+            {
+                reset();
+            }
+        }
+        else if(u.equals(AutoInstruction.Unit.EncoderTicks) || u.equals(AutoInstruction.Unit.Rotations))
+        {
+            if(driveDistance(ai.args.get(0), ai.args.get(1), ai.args.get(2), (u.equals(AutoInstruction.Unit.EncoderTicks) ? ai.amount : ai.amount*TICKS_PER_ROTATION), fieldOrient))
+            {
+                reset();
+            }
+        }
+        else if(u.equals(AutoInstruction.Unit.Feet) || u.equals(AutoInstruction.Unit.Inches))
+        {	
+            if(driveDistance(ai.args.get(0),ai.args.get(1), ai.args.get(2), (u.equals(AutoInstruction.Unit.Inches) ? ai.amount*TICKS_PER_INCH : (ai.amount*TICKS_PER_INCH))*12.0, fieldOrient))
+            {
+                reset();
+            }
+        }
     }
 
     private double getAngle(){
