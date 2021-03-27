@@ -126,15 +126,12 @@ public class Robot extends TimedRobot {
     }
 
     if (enableIndex) {
-      // index.setIndexSpeed(operator.getY(Hand.kLeft));
-      if (operator.getBButton()) {
-        index.indexUntilLoaded();
-      } else {
-        index.setIndexSpeed(0);
+      if (operator.getBButtonPressed()) {
+        index.startLoading();
       }
-      // System.out.println(index.getFinalIndex());
     }
 
+    index.update();
     logger.writeLine();
   }
 

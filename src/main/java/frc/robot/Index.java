@@ -7,7 +7,8 @@ public class Index {
   public CANSparkMax belt;
   public DigitalInput finalIndex;
 
-  public int numBalls;
+  private double indexSpeed = 0.1;
+  private int numBalls;
 
   public enum State {
     Idle, Loading, Loaded, Shooting, ManualControl
@@ -22,15 +23,21 @@ public class Index {
     reset();
   }
 
-  public void overrideState(State s) {
-    state = s;
-  }
-
   public void update() {
+    System.out.println(state);
+
     switch (state) {
       case Idle:
         break;
       case Loading:
+        if (!getFinalIndex()) {
+          setIndexSpeed(indexSpeed);
+        } else {
+          setIndexSpeed(0);
+
+          numBalls++;
+          state = State.Loaded;
+        }
         break;
       case Loaded:
         break;
@@ -44,16 +51,28 @@ public class Index {
     }
   }
 
-  public void setIndexSpeed(double speed) {
-    belt.set(speed);
+  public void startLoading() {
+    state = State.Loading;
   }
 
   public void indexUntilLoaded() {
-    setIndexSpeed(getFinalIndex() ? 0.1 : 0);
+    setIndexSpeed(getFinalIndex() ? 0 : indexSpeed);
   }
 
   public boolean getFinalIndex() {
-    return finalIndex.get();
+    return !finalIndex.get();
+  }
+
+  public State getState() {
+    return state;
+  }
+
+  public void setState(State s) {
+    state = s;
+  }
+
+  public void setIndexSpeed(double speed) {
+    belt.set(speed);
   }
 
   private void reset() {
