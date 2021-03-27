@@ -120,6 +120,43 @@ public class JsonAutonomous extends Autonomous{
 
     @Override
     public void run(){
+        if(step == -1)
+        {
+            reset();
+        }
+        if(instructions.size() == step)
+        {
+            swerve.swerve(0, 0, 0, getAngle()-navxStart, false);
+            return;
+        }
+        AutoInstruction ai = instructions.get(step);
+
+        switch (ai.type) {
+            case "drive":
+                drive(ai, false);
+                break;
+
+            case "drive-fo":
+                drive(ai, true);
+                break;
+
+            case "turnDeg":
+                turnDegrees(ai, false);
+                break;
+
+            case "turnDeg-fo":
+                turnDegrees(ai, true);
+                break;
+
+            case "wait":
+                wait(ai);
+                break;
+
+            default:
+                System.out.println("Invalid Command");
+                reset();
+                break;
+        }
     }
 
     private boolean driveTime(double x, double y, double z, double t, boolean fieldOrient)
@@ -157,6 +194,7 @@ public class JsonAutonomous extends Autonomous{
 
     public void wait(AutoInstruction ai)
     {
+        swerve.swerve(0, 0, 0, getAngle()-navxStart, false);
         if(timer.get() >= ai.args.get(0))
         {
             reset();
