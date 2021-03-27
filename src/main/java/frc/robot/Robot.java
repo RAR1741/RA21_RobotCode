@@ -5,19 +5,12 @@
 package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-
-import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.GenericHID.Hand;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import edu.wpi.first.wpilibj.GenericHID.Hand;
-import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.TimedRobot;
 import frc.robot.logging.LoggableController;
@@ -81,8 +74,7 @@ public class Robot extends TimedRobot {
     gyro.enableLogging(false);
 
     if (enableShooter) {
-    shooter = new Shooter(new TalonFX(14), new CANSparkMax(11, MotorType.kBrushless),
-        new CANSparkMax(13, MotorType.kBrushless));
+    shooter = new Shooter(new TalonFX(14), new CANSparkMax(13, MotorType.kBrushless));
     }
 
     if (enableDrivetrain) {

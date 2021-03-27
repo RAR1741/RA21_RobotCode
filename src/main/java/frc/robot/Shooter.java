@@ -16,7 +16,6 @@ public class Shooter {
     private static final double POSITION_TOLERANCE = 0.05; // Limit of being "close enough" on the angle
 
     TalonFX shooter;
-    CANSparkMax feeder;
     CANSparkMax angle;
 
     private double targetAngle;
@@ -24,12 +23,11 @@ public class Shooter {
     public enum State {
       HomingDown, Idle, MovingToAngle, ManualControl
     }
-  
+
     private State state;
 
-    Shooter(TalonFX shooter, CANSparkMax feeder, CANSparkMax angle){
+    Shooter(TalonFX shooter, CANSparkMax angle){
         this.shooter = shooter;
-        this.feeder = feeder;
         this.angle = angle;
 
         angle.getPIDController().setP(0.1);
@@ -43,7 +41,7 @@ public class Shooter {
 
     /**
      * Sets motor power.
-     * 
+     *
      * @param power the power at which the shooter spins.
      */
     public void manualControl(double power, double angleMotorPower) {
@@ -71,12 +69,12 @@ public class Shooter {
     public double getTargetAngle() {
         return targetAngle;
       }
-    
+
       public boolean onTarget() {
         double error = angle.getEncoder().getPosition() - targetAngle;
         return Math.abs(error) < POSITION_TOLERANCE;
       }
-    
+
       /**
        * Run main state machine for semi-autonomous control of the robot.
        */
@@ -84,7 +82,7 @@ public class Shooter {
         switch (state) {
           case HomingDown:
             angle.set(HOMING_SPEED_DOWN);
-    
+
             if (angle.getReverseLimitSwitch(LimitSwitchPolarity.kNormallyOpen).get()) {
               // We've reached the lower limit of the screw assembly, we're now at a
               // known position. Set the absolute position to the encoder so we can deal
@@ -107,7 +105,7 @@ public class Shooter {
             break;
         }
       }
-    
+
       public void reHome() {
         state = State.HomingDown;
       }
@@ -118,7 +116,7 @@ public class Shooter {
 
     /**
      * Sets angle motor to a specified angle
-     * 
+     *
      * @param degrees degrees to which the angle motor will be turned.
      */
     public void setAngle(double degrees) {
