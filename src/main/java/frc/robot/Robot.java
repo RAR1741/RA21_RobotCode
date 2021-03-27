@@ -64,6 +64,12 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
 
+    // Drive Train:
+    // Back left drive - 3
+    // Back left angle - 6
+    // ---------------------
+    // Front right drive - 5
+    // Front right angle - 4
     // ---------------------
     // Front left drive - 7
     // Front left angle - 8
