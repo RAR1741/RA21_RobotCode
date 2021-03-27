@@ -7,7 +7,7 @@ public class Index {
   public CANSparkMax belt;
   public DigitalInput finalIndex;
 
-  private double indexSpeed = 0.1;
+  private double indexSpeed = 0.2;
   private int numBalls;
 
   public enum State {
