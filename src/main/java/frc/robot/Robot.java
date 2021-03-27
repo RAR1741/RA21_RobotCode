@@ -27,7 +27,7 @@ import frc.robot.logging.Logger;
 public class Robot extends TimedRobot {
 
   Boolean enableDrivetrain = false;
-  Boolean enableShooter = false;
+  Boolean enableShooter = true;
   Boolean enableIndex = true;
 
   AHRS gyro;
@@ -132,8 +132,7 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
 
     if (enableShooter) {
-      shooter.manualControl(Math.abs(driver.getY(Hand.kLeft)) > 0.05 ? driver.getY(Hand.kLeft) : 0,
-          Math.abs(driver.getY(Hand.kRight)) > 0.05 ? driver.getY(Hand.kRight) : 0);
+      shooter.setPower(Math.abs(operator.getY(Hand.kLeft)) > 0.05 ? operator.getY(Hand.kLeft) : 0);
     }
 
     if (enableDrivetrain) {
@@ -144,6 +143,12 @@ public class Robot extends TimedRobot {
     if (enableIndex) {
       if (operator.getBButtonPressed()) {
         index.startLoading();
+      }
+
+      if (operator.getAButton()) {
+        index.setState(Index.State.Shooting);
+      } else if (operator.getAButtonReleased()) {
+        index.setState(Index.State.Idle);
       }
     }
 
