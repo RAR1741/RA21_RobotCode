@@ -25,7 +25,7 @@ public class Index {
   }
 
   public void update() {
-    System.out.println(String.format("%s \t| %s", state, numBalls));
+    // System.out.println(String.format("%s \t| %s", state, numBalls));
 
     switch (state) {
       case Idle:

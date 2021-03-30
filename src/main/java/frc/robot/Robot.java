@@ -74,7 +74,7 @@ public class Robot extends TimedRobot {
     gyro.enableLogging(false);
 
     if (enableShooter) {
-    shooter = new Shooter(new TalonFX(14), new CANSparkMax(13, MotorType.kBrushless));
+      shooter = new Shooter(new TalonFX(14), new CANSparkMax(13, MotorType.kBrushless));
     }
 
     if (enableDrivetrain) {
@@ -132,7 +132,13 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
 
     if (enableShooter) {
-      shooter.setPower(Math.abs(operator.getY(Hand.kLeft)) > 0.05 ? operator.getY(Hand.kLeft) : 0);
+      System.out.println("---------------");
+      System.out.println(shooter.getShooterSpeed());
+
+      // shooter.setShooterPower(
+      //     Math.abs(operator.getY(Hand.kLeft)) > 0.05 ? operator.getY(Hand.kLeft) : 0);
+      // shooter.setShooterSpeed(Math.abs(operator.getY(Hand.kLeft)) > 0.05 ? 2000 : 0);
+      shooter.setShooterSpeed(2000);
     }
 
     if (enableDrivetrain) {

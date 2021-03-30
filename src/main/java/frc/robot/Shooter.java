@@ -1,7 +1,11 @@
 package frc.robot;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
+import com.ctre.phoenix.motorcontrol.can.TalonFXPIDSetConfiguration;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.ControlType;
 import com.revrobotics.CANDigitalInput.LimitSwitchPolarity;
@@ -29,6 +33,14 @@ public class Shooter {
   private State state;
 
   Shooter(TalonFX shooter, CANSparkMax angle) {
+    // shooter.configFactoryDefault();
+    shooter.setNeutralMode(NeutralMode.Coast);
+
+    // TalonFXConfiguration config = new TalonFXConfiguration();
+    // config.primaryPID.selectedFeedbackSensor = FeedbackDevice.IntegratedSensor;
+    // // config.
+    // shooter.configAllSettings(config);
+
     this.shooter = shooter;
     this.angle = angle;
 
@@ -48,19 +60,20 @@ public class Shooter {
    */
   public void manualControl(double power, double angleMotorPower) {
     state = State.ManualControl;
-    setPower(power * 0.5);
+    setShooterPower(power * 0.5);
     angle.set(angleMotorPower * 0.05);
   }
 
-  public void setPower(double power) {
-    shooter.set(ControlMode.PercentOutput, power);
+  public void setShooterPower(double power) {
+    shooter.set(TalonFXControlMode.PercentOutput, power);
   }
 
-  public void setSpeed(double rpm) {
-    shooter.set(ControlMode.Velocity, rpm);
+  public void setShooterSpeed(double rpm) {
+    shooter.set(TalonFXControlMode.Velocity, rpm);
+    System.out.println(rpm);
   }
 
-  public double getSpeed() {
+  public double getShooterSpeed() {
     return shooter.getSelectedSensorVelocity();
   }
 
