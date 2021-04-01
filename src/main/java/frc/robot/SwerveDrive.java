@@ -33,7 +33,7 @@ public class SwerveDrive {
         moveCount = 20;
 
         FR.initMagEncoder(1237.0);
-        FL.initMagEncoder(2556.0);
+        FL.initMagEncoder(545.0);
         BR.initMagEncoder(3024.0);
         BL.initMagEncoder(1986.0);
     }
