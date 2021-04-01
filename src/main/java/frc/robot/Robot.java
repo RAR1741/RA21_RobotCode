@@ -27,7 +27,7 @@ import frc.robot.logging.Logger;
  */
 public class Robot extends TimedRobot {
 
-  Boolean enableDrivetrain = false;
+  Boolean enableDrivetrain = true;
   Boolean enableShooter = false;
   Boolean enableIndex = true;
 
