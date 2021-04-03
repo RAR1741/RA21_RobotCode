@@ -75,7 +75,7 @@ public class Shooter {
 
   public void setShooterSpeed(double rpm) {
     shooter.set(TalonFXControlMode.Velocity, rpm);
-    System.out.println(rpm);
+    // System.out.println(rpm);
   }
 
   public double getShooterSpeed() {
