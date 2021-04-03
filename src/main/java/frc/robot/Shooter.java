@@ -3,6 +3,7 @@ package frc.robot;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.revrobotics.CANDigitalInput.LimitSwitchPolarity;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
@@ -20,6 +21,7 @@ public class Shooter {
 
   TalonFX shooter;
   CANSparkMax angle;
+  TalonFXConfiguration shooterConfig;
 
   private double targetAngle;
 
@@ -30,17 +32,23 @@ public class Shooter {
   private State state;
 
   Shooter(TalonFX shooter, CANSparkMax angle) {
-    // shooter.configFactoryDefault();
-    shooter.setNeutralMode(NeutralMode.Coast);
-
-    // TalonFXConfiguration config = new TalonFXConfiguration();
-    // config.primaryPID.selectedFeedbackSensor = FeedbackDevice.IntegratedSensor;
-    // // config.
-    // shooter.configAllSettings(config);
-
     this.shooter = shooter;
     this.angle = angle;
 
+    // Configure the shooter motor
+    shooterConfig = new TalonFXConfiguration();
+    shooterConfig.peakOutputForward = 1.0;
+    shooterConfig.peakOutputReverse = 0.0; // Don't let the motor go backwards
+
+    shooterConfig.slot0.kP = 0.25;
+    shooterConfig.slot0.kI = 0.0;
+    shooterConfig.slot0.kD = 17.0;
+    shooterConfig.slot0.kF = 0.0;
+
+    shooter.configAllSettings(shooterConfig);
+    shooter.setNeutralMode(NeutralMode.Coast);
+
+    // Configure the angle motor
     angle.getPIDController().setP(0.1);
     angle.getPIDController().setI(0.0);
     angle.getPIDController().setD(0.0);
