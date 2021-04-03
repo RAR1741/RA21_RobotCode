@@ -135,10 +135,8 @@ public class Robot extends TimedRobot {
       System.out.println("---------------");
       System.out.println(shooter.getShooterSpeed());
 
-      // shooter.setShooterPower(
-      //     Math.abs(operator.getY(Hand.kLeft)) > 0.05 ? operator.getY(Hand.kLeft) : 0);
-      // shooter.setShooterSpeed(Math.abs(operator.getY(Hand.kLeft)) > 0.05 ? 2000 : 0);
-      shooter.setShooterSpeed(2000);
+      shooter.setShooterSpeed(Math.abs(operator.getY(Hand.kLeft)) > 0.05 ? 2000 : 0);
+      // shooter.setShooterSpeed(2000);
     }
 
     if (enableDrivetrain) {
