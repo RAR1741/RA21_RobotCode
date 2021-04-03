@@ -9,9 +9,8 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import edu.wpi.first.wpilibj.GenericHID.Hand;
-import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.TimedRobot;
 import frc.robot.logging.LoggableController;
@@ -28,18 +27,24 @@ import frc.robot.logging.Logger;
 public class Robot extends TimedRobot {
 
   Boolean enableDrivetrain = true;
-  Boolean enableShooter = false;
+  Boolean enableShooter = true;
   Boolean enableIndex = true;
 
   AHRS gyro;
+
+  Shooter shooter;
+
   Index index;
+
   SwerveDrive swerve;
   SwerveModule FR;
   SwerveModule FL;
   SwerveModule BR;
   SwerveModule BL;
+
   LoggableController driver;
   LoggableController operator;
+
   Logger logger;
   LoggableTimer timer;
 
@@ -48,6 +53,7 @@ public class Robot extends TimedRobot {
    * This function is run when the robot is first started up and should be used
    * for any initialization code.
    */
+
   @Override
   public void robotInit() {
 
@@ -66,6 +72,10 @@ public class Robot extends TimedRobot {
 
     gyro = new AHRS(SPI.Port.kMXP);
     gyro.enableLogging(false);
+
+    if (enableShooter) {
+      shooter = new Shooter(new TalonFX(14), new CANSparkMax(13, MotorType.kBrushless));
+    }
 
     if (enableDrivetrain) {
       BL = new SwerveModule(new TalonFX(3), new WPI_TalonSRX(6));
@@ -120,6 +130,15 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
+
+    if (enableShooter) {
+      System.out.println("---------------");
+      System.out.println(shooter.getShooterSpeed());
+
+      shooter.setShooterSpeed(Math.abs(operator.getY(Hand.kLeft)) > 0.05 ? 2000 : 0);
+      // shooter.setShooterSpeed(2000);
+    }
+
     if (enableDrivetrain) {
       swerve.driverSwerve(driver.getX(Hand.kLeft), -driver.getY(Hand.kLeft),
           driver.getX(Hand.kRight), gyro.getAngle(), true);
@@ -128,6 +147,12 @@ public class Robot extends TimedRobot {
     if (enableIndex) {
       if (operator.getBButtonPressed()) {
         index.startLoading();
+      }
+
+      if (operator.getAButton()) {
+        index.setState(Index.State.Shooting);
+      } else if (operator.getAButtonReleased()) {
+        index.setState(Index.State.Idle);
       }
     }
 

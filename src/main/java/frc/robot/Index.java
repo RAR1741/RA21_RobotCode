@@ -8,6 +8,7 @@ public class Index {
   public DigitalInput finalIndex;
 
   private double indexSpeed = 0.2;
+  private double shootSpeed = 0.5;
   private int numBalls;
 
   public enum State {
@@ -24,11 +25,13 @@ public class Index {
   }
 
   public void update() {
-    System.out.println(state);
+    // System.out.println(String.format("%s \t| %s", state, numBalls));
 
     switch (state) {
       case Idle:
+        setIndexSpeed(0);
         break;
+
       case Loading:
         if (!getFinalIndex()) {
           setIndexSpeed(indexSpeed);
@@ -39,12 +42,17 @@ public class Index {
           state = State.Loaded;
         }
         break;
+
       case Loaded:
         break;
+
       case Shooting:
+        setIndexSpeed(shootSpeed);
         break;
+
       case ManualControl:
         break;
+
       default:
         System.out.println("We shouldn't be here...");
         break;
