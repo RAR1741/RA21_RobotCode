@@ -40,9 +40,10 @@ public class Shooter {
     shooterConfig.peakOutputForward = 1.0;
     shooterConfig.peakOutputReverse = 0.0; // Don't let the motor go backwards
 
-    shooterConfig.slot0.kP = 0.25;
-    shooterConfig.slot0.kI = 0.0;
-    shooterConfig.slot0.kD = 17.0;
+    shooterConfig.slot0.kP = 0.27;
+    shooterConfig.slot0.kI = 0.00011;
+    // shooterConfig.slot0.kD = 0.0;
+    shooterConfig.slot0.kD = 15.0;
     shooterConfig.slot0.kF = 0.0;
 
     shooter.configAllSettings(shooterConfig);
@@ -75,11 +76,15 @@ public class Shooter {
 
   public void setShooterSpeed(double rpm) {
     shooter.set(TalonFXControlMode.Velocity, rpm);
-    // System.out.println(rpm);
+    System.out.println(rpm);
   }
 
   public double getShooterSpeed() {
     return shooter.getSelectedSensorVelocity();
+  }
+
+  public boolean isAtTargetSpeed() {
+    return getShooterSpeed() >= shooter.getClosedLoopTarget();
   }
 
   public double getTargetAngle() {

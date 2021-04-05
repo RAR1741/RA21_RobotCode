@@ -30,12 +30,7 @@ public class Index {
   }
 
   public void update(boolean firing, boolean ejecting) {
-    System.out.println(String.format("%s \t| %s \t| %s", getFirstIndex(), getMiddleIndex(), getFinalIndex()));
-
-    // Don't load if there a ball trigging the final sensor
-    // if (getFinalIndex() && state != State.Shooting) {
-    //   state = State.Idle;
-    // }
+    // System.out.println(String.format("%s \t| %s \t| %s", getFirstIndex(), getMiddleIndex(), getFinalIndex()));
 
     if (firing) {
       // Fire
@@ -59,37 +54,6 @@ public class Index {
     if (ejecting) {
       setIndexSpeed(-indexSpeed * 1.5);
     }
-
-    // switch (state) {
-    //   case Idle:
-    //     setIndexSpeed(0);
-    //     break;
-
-    //   case Loading:
-    //     if (!getFinalIndex()) {
-    //       setIndexSpeed(indexSpeed);
-    //     } else {
-    //       setIndexSpeed(0);
-
-    //       numBalls++;
-    //       state = State.Loaded;
-    //     }
-    //     break;
-
-    //   case Loaded:
-    //     break;
-
-    //   case Shooting:
-    //     setIndexSpeed(shootSpeed);
-    //     break;
-
-    //   case ManualControl:
-    //     break;
-
-    //   default:
-    //     System.out.println("We shouldn't be here...");
-    //     break;
-    // }
   }
 
   public void startLoading() {

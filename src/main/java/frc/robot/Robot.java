@@ -26,7 +26,7 @@ import frc.robot.logging.Logger;
  */
 public class Robot extends TimedRobot {
 
-  Boolean enableDrivetrain = false;
+  Boolean enableDrivetrain = true;
   Boolean enableShooter = true;
   Boolean enableIndex = true;
 
@@ -133,10 +133,22 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
 
     if (enableShooter) {
-      // System.out.println("---------------");
-      // System.out.println(shooter.getShooterSpeed());
+      System.out.println("---------------");
+      System.out.println(shooter.getShooterSpeed());
 
-      shooter.setShooterSpeed(Math.abs(operator.getY(Hand.kLeft)) > 0.05 ? 2000 : 0);
+      double shooterTargetSpeed = 0;
+      if (driver.getAButton()) {
+        shooterTargetSpeed = 6000.0;
+      } else if (driver.getBButton()) {
+        shooterTargetSpeed = 15000.0;
+      } else if (driver.getYButton()) {
+        shooterTargetSpeed = 14800.0;
+      } else if (driver.getXButton()) {
+        shooterTargetSpeed = 16000.0;
+      }
+      shooter.setShooterSpeed(shooterTargetSpeed);
+
+      // shooter.setShooterSpeed(Math.abs(operator.getY(Hand.kLeft)) > 0.05 ? 15000 : 0);
       // shooter.setShooterSpeed(2000);
     }
 
@@ -146,15 +158,10 @@ public class Robot extends TimedRobot {
     }
 
     if (enableIndex) {
-      boolean firing = operator.getAButton();
+      // Include if the shooter is up to speed in this calculation as well
+      boolean firing = operator.getAButton() && shooter.isAtTargetSpeed();
+
       boolean ejecting = operator.getBButton();
-
-      // if (operator.getBButtonPressed()) {
-      //   index.startLoading();
-      // }
-
-      // index.setState(Index.State.Shooting);
-      // index.setState(Index.State.Idle);
 
       index.update(firing, ejecting);
     }
