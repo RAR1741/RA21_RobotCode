@@ -31,7 +31,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
 
-    shooter = new Shooter(new TalonFX(14), new CANSparkMax(11, MotorType.kBrushless), new CANSparkMax(13, MotorType.kBrushless));
+    shooter = new Shooter(new TalonFX(0), new CANSparkMax(11, MotorType.kBrushless), new CANSparkMax(13, MotorType.kBrushless));
 
     driver = new XboxController(0);
     operator = new XboxController(1);
@@ -51,11 +51,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-
-    shooter.manualControl(Math.abs(driver.getY(Hand.kLeft)) > 0.05 ? driver.getY(Hand.kLeft) : 0,
-     Math.abs(driver.getY(Hand.kRight)) > 0.05 ? driver.getY(Hand.kRight) : 0);
-    shooter.setFeed(driver.getAButton());
-
+    double shootPower = 0.50;
+    shooter.setPower(driver.getYButton() ? shootPower: 0);
   }
 
   @Override
