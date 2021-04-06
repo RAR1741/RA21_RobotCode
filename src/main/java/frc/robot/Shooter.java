@@ -57,8 +57,8 @@ public class Shooter {
     shooter.setNeutralMode(NeutralMode.Coast);
 
     // Configure the angle motor
-    angle.getPIDController().setP(0.01);
-    angle.getPIDController().setI(0.0);
+    angle.getPIDController().setP(0.015);
+    angle.getPIDController().setI(0.0000007);
     angle.getPIDController().setD(0.0);
     angle.getPIDController().setFeedbackDevice(angle.getEncoder());
     angle.setIdleMode(IdleMode.kBrake);
@@ -98,7 +98,7 @@ public class Shooter {
     return targetAngle;
   }
 
-  public boolean isOnTarget() {
+  public boolean isAngleAtTarget() {
     double error = angle.getEncoder().getPosition() - targetAngle;
     return Math.abs(error) < POSITION_TOLERANCE;
   }
@@ -126,7 +126,7 @@ public class Shooter {
         // Idle!
         break;
       case MovingToAngle:
-        if (isOnTarget()) {
+        if (isAngleAtTarget()) {
           state = State.Idle;
         }
         break;
@@ -147,8 +147,8 @@ public class Shooter {
    */
   public void setAngle(double degrees) {
     state = State.MovingToAngle;
-    targetAngle = degrees * EncPerDeg; // TODO: add this back in...
-    // targetAngle = degrees;
+    targetAngle = degrees * EncPerDeg;
+    System.out.println(degrees);
     angle.getPIDController().setReference(targetAngle, ControlType.kPosition);
   }
 
@@ -157,7 +157,6 @@ public class Shooter {
   }
 
   public double getAngle() {
-    // return angle.getEncoder().getPosition(); // TODO: add this back in...
     return angle.getEncoder().getPosition() / EncPerDeg;
   }
 

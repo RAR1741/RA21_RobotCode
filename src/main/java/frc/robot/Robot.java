@@ -140,8 +140,9 @@ public class Robot extends TimedRobot {
       double shooterTargetAngle = 0;
 
       if (driver.getAButton()) {
+        // Power port challenge values
         shooterTargetSpeed = 10200.0;
-        // shooterTargetAngle = 10;
+        shooter.setAngle(38.1);
       }
       // else if (driver.getBButton()) {
       //   shooterTargetSpeed = 15000.0;
@@ -153,18 +154,15 @@ public class Robot extends TimedRobot {
       //   shooterTargetSpeed = 16000.0;
       //   shooterTargetAngle = 30;
       // }
-      // shooter.setShooterSpeed(shooterTargetSpeed);
-      // shooter.setAngle(shooterTargetAngle);
+      shooter.setShooterSpeed(shooterTargetSpeed);
       System.out.println(shooter.getAngle());
 
-      shooter.setAnglePower(operator.getY(Hand.kLeft) * 0.1);
 
       if (operator.getXButtonPressed()) {
         shooter.reHome();
       }
 
       shooter.update();
-      // System.out.println(shooter.getForwardLimit());
     }
 
     if (enableDrivetrain) {
