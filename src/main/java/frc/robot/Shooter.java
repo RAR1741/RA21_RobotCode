@@ -12,7 +12,7 @@ import com.revrobotics.ControlType;
 public class Shooter {
 
   // TODO: Determine values
-  static final double EncPerDeg = 1.0f * 360.0f;
+  static final double EncPerDeg = 42.0f * 100.0f / 180.0 * 24.5 * 7.75 * Math.PI / 180.0;
   private static final double HOMING_SPEED_DOWN = -0.3; // Speed at which we seek downward during
                                                         // homing
   private static final double HOME_POSITION = 0.0; // Angle at lower limit switch
@@ -50,7 +50,7 @@ public class Shooter {
     shooter.setNeutralMode(NeutralMode.Coast);
 
     // Configure the angle motor
-    angle.getPIDController().setP(0.1);
+    angle.getPIDController().setP(0.01);
     angle.getPIDController().setI(0.0);
     angle.getPIDController().setD(0.0);
     angle.getPIDController().setFeedbackDevice(angle.getEncoder());
@@ -91,7 +91,7 @@ public class Shooter {
     return targetAngle;
   }
 
-  public boolean onTarget() {
+  public boolean isOnTarget() {
     double error = angle.getEncoder().getPosition() - targetAngle;
     return Math.abs(error) < POSITION_TOLERANCE;
   }
@@ -102,13 +102,13 @@ public class Shooter {
   public void update() {
     switch (state) {
       case HomingDown:
-        angle.set(HOMING_SPEED_DOWN);
+        setAnglePower(HOMING_SPEED_DOWN);
 
-        if (angle.getReverseLimitSwitch(LimitSwitchPolarity.kNormallyOpen).get()) {
+        if (getReverseLimit()) {
           // We've reached the lower limit of the screw assembly, we're now at a
           // known position. Set the absolute position to the encoder so we can deal
           // with easier units.
-          angle.set(0);
+          setAnglePower(0);
           angle.getEncoder().setPosition(HOME_POSITION);
           state = State.Idle;
         }
@@ -117,7 +117,7 @@ public class Shooter {
         // Idle!
         break;
       case MovingToAngle:
-        if (onTarget()) {
+        if (isOnTarget()) {
           state = State.Idle;
         }
         break;
@@ -131,10 +131,6 @@ public class Shooter {
     state = State.HomingDown;
   }
 
-  public void setAnglePower(double power) {
-    angle.set(power);
-  }
-
   /**
    * Sets angle motor to a specified angle
    *
@@ -142,8 +138,12 @@ public class Shooter {
    */
   public void setAngle(double degrees) {
     state = State.MovingToAngle;
-    targetAngle = degrees;
+    targetAngle = degrees * EncPerDeg;
     angle.getPIDController().setReference(targetAngle, ControlType.kPosition);
+  }
+
+  public void setAnglePower(double power) {
+    angle.set(power);
   }
 
   public double getAngle() {

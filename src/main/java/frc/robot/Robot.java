@@ -137,19 +137,32 @@ public class Robot extends TimedRobot {
       System.out.println(shooter.getShooterSpeed());
 
       double shooterTargetSpeed = 0;
+      double shooterTargetAngle = 0;
+
       if (driver.getAButton()) {
         shooterTargetSpeed = 6000.0;
+        shooterTargetAngle = 10;
       } else if (driver.getBButton()) {
         shooterTargetSpeed = 15000.0;
+        shooterTargetAngle = 15;
       } else if (driver.getYButton()) {
         shooterTargetSpeed = 14800.0;
+        shooterTargetAngle = 20;
       } else if (driver.getXButton()) {
         shooterTargetSpeed = 16000.0;
+        shooterTargetAngle = 30;
       }
       shooter.setShooterSpeed(shooterTargetSpeed);
+      // shooter.setAngle(shooterTargetAngle);
+      // System.out.println(shooter.getAngle());
 
-      // shooter.setShooterSpeed(Math.abs(operator.getY(Hand.kLeft)) > 0.05 ? 15000 : 0);
-      // shooter.setShooterSpeed(2000);
+      shooter.setAnglePower(operator.getY(Hand.kLeft) * 0.1);
+
+      if (operator.getXButtonPressed()) {
+        shooter.reHome();
+      }
+
+      shooter.update();
     }
 
     if (enableDrivetrain) {
