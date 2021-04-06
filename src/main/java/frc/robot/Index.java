@@ -9,7 +9,7 @@ public class Index {
   public DigitalInput middleIndex;
   public DigitalInput finalIndex;
 
-  private double indexSpeed = 0.1;
+  private double indexSpeed = 0.2;
   private double shootSpeed = 0.5;
   private int numBalls;
 

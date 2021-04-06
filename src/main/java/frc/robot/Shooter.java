@@ -12,8 +12,15 @@ import com.revrobotics.ControlType;
 public class Shooter {
 
   // TODO: Determine values
-  static final double EncPerDeg = 42.0f * 100.0f / 180.0 * 24.5 * 7.75 * Math.PI / 180.0;
-  private static final double HOMING_SPEED_DOWN = -0.3; // Speed at which we seek downward during
+  // static final double EncPerDeg = 42.0f * 100.0f * 180.0f * 7.75f * Math.PI * Math.PI / 180.0f;
+  // static final double EncPerDeg = 100.0f * 180.0f * 7.75f * Math.PI * Math.PI / 180.0f;
+  static final double EncPerDeg = 100.0f * 7.75f / 360.0;
+
+  //OLD
+  // static final double EncPerDeg = 42.0f * 100.0f * 180.0f * 24.5f * 7.75f * Math.PI / 180.0f;
+  // static final double EncPerDeg = 100.0f * 180.0f * 24.5f * 7.75f * Math.PI / 180.0f;
+
+  private static final double HOMING_SPEED_DOWN = -0.1; // Speed at which we seek downward during
                                                         // homing
   private static final double HOME_POSITION = 0.0; // Angle at lower limit switch
   private static final double POSITION_TOLERANCE = 0.05; // Limit of being "close enough" on the
@@ -41,7 +48,7 @@ public class Shooter {
     shooterConfig.peakOutputReverse = 0.0; // Don't let the motor go backwards
 
     shooterConfig.slot0.kP = 0.27;
-    shooterConfig.slot0.kI = 0.00011;
+    shooterConfig.slot0.kI = 0.00015;
     // shooterConfig.slot0.kD = 0.0;
     shooterConfig.slot0.kD = 15.0;
     shooterConfig.slot0.kF = 0.0;
@@ -76,7 +83,7 @@ public class Shooter {
 
   public void setShooterSpeed(double rpm) {
     shooter.set(TalonFXControlMode.Velocity, rpm);
-    System.out.println(rpm);
+    // System.out.println(rpm);
   }
 
   public double getShooterSpeed() {
@@ -100,6 +107,8 @@ public class Shooter {
    * Run main state machine for semi-autonomous control of the robot.
    */
   public void update() {
+    System.out.println(state);
+
     switch (state) {
       case HomingDown:
         setAnglePower(HOMING_SPEED_DOWN);
@@ -138,7 +147,8 @@ public class Shooter {
    */
   public void setAngle(double degrees) {
     state = State.MovingToAngle;
-    targetAngle = degrees * EncPerDeg;
+    targetAngle = degrees * EncPerDeg; // TODO: add this back in...
+    // targetAngle = degrees;
     angle.getPIDController().setReference(targetAngle, ControlType.kPosition);
   }
 
@@ -147,6 +157,7 @@ public class Shooter {
   }
 
   public double getAngle() {
+    // return angle.getEncoder().getPosition(); // TODO: add this back in...
     return angle.getEncoder().getPosition() / EncPerDeg;
   }
 

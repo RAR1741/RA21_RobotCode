@@ -133,28 +133,29 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
 
     if (enableShooter) {
-      System.out.println("---------------");
-      System.out.println(shooter.getShooterSpeed());
+      // System.out.println("---------------");
+      // System.out.println(shooter.getShooterSpeed());
 
       double shooterTargetSpeed = 0;
       double shooterTargetAngle = 0;
 
       if (driver.getAButton()) {
-        shooterTargetSpeed = 6000.0;
-        shooterTargetAngle = 10;
-      } else if (driver.getBButton()) {
-        shooterTargetSpeed = 15000.0;
-        shooterTargetAngle = 15;
-      } else if (driver.getYButton()) {
-        shooterTargetSpeed = 14800.0;
-        shooterTargetAngle = 20;
-      } else if (driver.getXButton()) {
-        shooterTargetSpeed = 16000.0;
-        shooterTargetAngle = 30;
+        shooterTargetSpeed = 10200.0;
+        // shooterTargetAngle = 10;
       }
-      shooter.setShooterSpeed(shooterTargetSpeed);
+      // else if (driver.getBButton()) {
+      //   shooterTargetSpeed = 15000.0;
+      //   shooterTargetAngle = 15;
+      // } else if (driver.getYButton()) {
+      //   shooterTargetSpeed = 14800.0;
+      //   shooterTargetAngle = 20;
+      // } else if (driver.getXButton()) {
+      //   shooterTargetSpeed = 16000.0;
+      //   shooterTargetAngle = 30;
+      // }
+      // shooter.setShooterSpeed(shooterTargetSpeed);
       // shooter.setAngle(shooterTargetAngle);
-      // System.out.println(shooter.getAngle());
+      System.out.println(shooter.getAngle());
 
       shooter.setAnglePower(operator.getY(Hand.kLeft) * 0.1);
 
@@ -163,6 +164,7 @@ public class Robot extends TimedRobot {
       }
 
       shooter.update();
+      // System.out.println(shooter.getForwardLimit());
     }
 
     if (enableDrivetrain) {
@@ -172,7 +174,7 @@ public class Robot extends TimedRobot {
 
     if (enableIndex) {
       // Include if the shooter is up to speed in this calculation as well
-      boolean firing = operator.getAButton() && shooter.isAtTargetSpeed();
+      boolean firing = driver.getAButton() && shooter.isAtTargetSpeed();
 
       boolean ejecting = operator.getBButton();
 
