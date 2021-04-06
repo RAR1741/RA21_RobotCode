@@ -27,6 +27,7 @@ public class Robot extends TimedRobot {
   Shooter shooter;
   XboxController driver = null;
   XboxController operator = null;
+  boolean shooterRunning;
 
   @Override
   public void robotInit() {
@@ -35,6 +36,7 @@ public class Robot extends TimedRobot {
 
     driver = new XboxController(0);
     operator = new XboxController(1);
+    shooterRunning = false;
   }
 
   @Override
@@ -51,8 +53,11 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
+    if(driver.getBButtonPressed()) //For some reason the controller thinks this is A
+      shooterRunning = !shooterRunning;
     double shootPower = 0.50;
-    shooter.setPower(driver.getYButton() ? shootPower: 0);
+    shooter.setPower(driver.getYButton() ? shootPower: (shooterRunning ? shootPower : 0));
+    // shooter.setPower(shooterRunning ? shootPower : 0);
   }
 
   @Override
