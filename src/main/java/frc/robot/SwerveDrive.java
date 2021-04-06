@@ -2,7 +2,7 @@ package frc.robot;
 
 public class SwerveDrive {
 
-    private final double TurningSpeedFactor = -0.6;
+    private final double TurningSpeedFactor = -0.3;
     private double length, width, diameter;
     private double temp;
     private double a,b,c,d;

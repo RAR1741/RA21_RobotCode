@@ -107,7 +107,7 @@ public class Shooter {
    * Run main state machine for semi-autonomous control of the robot.
    */
   public void update() {
-    System.out.println(state);
+    // System.out.println(state);
 
     switch (state) {
       case HomingDown:

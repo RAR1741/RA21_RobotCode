@@ -48,6 +48,8 @@ public class Robot extends TimedRobot {
   Logger logger;
   LoggableTimer timer;
 
+  double gyroHeading = 0.0;
+
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -136,14 +138,18 @@ public class Robot extends TimedRobot {
       // System.out.println("---------------");
       // System.out.println(shooter.getShooterSpeed());
 
-      double shooterTargetSpeed = 0;
-      double shooterTargetAngle = 0;
+      // double shooterTargetSpeed = 0;
+      // double shooterTargetAngle = 0;
 
       if (driver.getAButton()) {
         // Power port challenge values
-        shooterTargetSpeed = 10200.0;
+        // shooterTargetSpeed = 10200.0;
+        shooter.setShooterSpeed(10200.0);
         shooter.setAngle(38.1);
+      } else if (driver.getBumper(Hand.kRight)) {
+        shooter.setShooterSpeed(0.0);
       }
+
       // else if (driver.getBButton()) {
       //   shooterTargetSpeed = 15000.0;
       //   shooterTargetAngle = 15;
@@ -154,27 +160,38 @@ public class Robot extends TimedRobot {
       //   shooterTargetSpeed = 16000.0;
       //   shooterTargetAngle = 30;
       // }
-      shooter.setShooterSpeed(shooterTargetSpeed);
-      System.out.println(shooter.getAngle());
+      // shooter.setShooterSpeed(shooterTargetSpeed);
+
+      // System.out.println(shooter.getAngle());
 
 
-      if (operator.getXButtonPressed()) {
+      if (driver.getXButtonPressed()) {
         shooter.reHome();
+        gyroHeading = gyro.getAngle();
       }
 
       shooter.update();
     }
 
     if (enableDrivetrain) {
-      swerve.driverSwerve(driver.getX(Hand.kLeft), -driver.getY(Hand.kLeft),
-          driver.getX(Hand.kRight), gyro.getAngle(), true);
+      double driveScale = 0.9;
+      double driftScale = 0.1;
+
+      double drift = gyroHeading - gyro.getAngle();
+
+      // System.out.println(String.format("%s \t| %s \t| %s", gyroHeading, drift, gyro.getAngle()));
+
+      double rotation = driver.getX(Hand.kRight) + (drift * driftScale);
+
+      swerve.driverSwerve(driver.getX(Hand.kLeft) * driveScale, -driver.getY(Hand.kLeft) * driveScale,
+          rotation, gyro.getAngle(), true);
     }
 
     if (enableIndex) {
       // Include if the shooter is up to speed in this calculation as well
-      boolean firing = driver.getAButton() && shooter.isAtTargetSpeed();
+      boolean firing = driver.getBButton() && shooter.isAtTargetSpeed();
 
-      boolean ejecting = operator.getBButton();
+      boolean ejecting = driver.getYButton();
 
       index.update(firing, ejecting);
     }
