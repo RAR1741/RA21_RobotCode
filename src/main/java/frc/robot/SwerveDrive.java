@@ -2,7 +2,7 @@ package frc.robot;
 
 public class SwerveDrive {
 
-    private final double TurningSpeedFactor = -1.0;
+    private final double TurningSpeedFactor = -0.3;
     private double length, width, diameter;
     private double temp;
     private double a,b,c,d;
@@ -158,10 +158,11 @@ public class SwerveDrive {
         BR.setDrive(ws3 * scaleSpeed);
         BL.setDrive(-ws4 * scaleSpeed);
 
-        FR.setAngle(wa2);
-        FL.setAngle(wa1);
-        BR.setAngle(wa3);
-        BL.setAngle(wa4);
+        // TOOD: FIx this...
+        // FR.setAngle(wa2);
+        // FL.setAngle(wa1);
+        // BR.setAngle(wa3);
+        // BL.setAngle(wa4);
     }
 
     public void setBrake()

@@ -48,6 +48,8 @@ public class Robot extends TimedRobot {
   Logger logger;
   LoggableTimer timer;
 
+  double gyroHeading = 0.0;
+
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -86,7 +88,8 @@ public class Robot extends TimedRobot {
     }
 
     if (enableIndex) {
-      index = new Index(new CANSparkMax(11, MotorType.kBrushless), new DigitalInput(0));
+      index = new Index(new CANSparkMax(11, MotorType.kBrushless), new DigitalInput(0),
+          new DigitalInput(1), new DigitalInput(2));
     }
 
     driver = new LoggableController("Driver", 0);
@@ -135,28 +138,85 @@ public class Robot extends TimedRobot {
       System.out.println("---------------");
       System.out.println(shooter.getShooterSpeed());
 
-      shooter.setShooterSpeed(Math.abs(operator.getY(Hand.kLeft)) > 0.05 ? 2000 : 0);
-      // shooter.setShooterSpeed(2000);
+      // double shooterTargetSpeed = 0;
+      // double shooterTargetAngle = 0;
+      // System.out.println(driver.getPOV());
+
+      if (driver.getAButton()) {
+        // Power port challenge values
+        shooter.setShooterSpeed(10200.0);
+        shooter.setAngle(38.1);
+      } else if (driver.getPOV() == 0) {
+        // Accuracy challenge RED zone
+        shooter.setShooterSpeed(11900.0);
+        shooter.setAngle(46.0);
+      } else if (driver.getPOV() == 90) {
+        // Accuracy challenge BLUE zone
+        shooter.setShooterSpeed(10200.0);
+        shooter.setAngle(38.1);
+      } else if (driver.getPOV() == 180) {
+        // Accuracy challenge YELLOW zone
+        shooter.setShooterSpeed(9500.0);
+        shooter.setAngle(38.7);
+      } else if (driver.getPOV() == 270) {
+        // Accuracy challenge GREEN zone
+        shooter.setShooterSpeed(8500.0);
+        shooter.setAngle(31.0);
+      } else if (driver.getBumper(Hand.kRight)) {
+        shooter.setShooterSpeed(0.0);
+      }
+
+      // else if (driver.getBButton()) {
+      //   shooterTargetSpeed = 15000.0;
+      //   shooterTargetAngle = 15;
+      // } else if (driver.getYButton()) {
+      //   shooterTargetSpeed = 14800.0;
+      //   shooterTargetAngle = 20;
+      // } else if (driver.getXButton()) {
+      //   shooterTargetSpeed = 16000.0;
+      //   shooterTargetAngle = 30;
+      // }
+      // shooter.setShooterSpeed(shooterTargetSpeed);
+
+      System.out.println(shooter.getAngle());
+
+
+      if (driver.getXButtonPressed()) {
+        shooter.reHome();
+        gyroHeading = gyro.getAngle();
+      }
+
+      shooter.update();
     }
 
     if (enableDrivetrain) {
-      swerve.driverSwerve(driver.getX(Hand.kLeft), -driver.getY(Hand.kLeft),
+      double driveScale = 0.9;
+      double driftScale = 0.1;
+
+      double drift = gyroHeading - gyro.getAngle();
+
+      // System.out.println(String.format("%s \t| %s \t| %s", gyroHeading, drift, gyro.getAngle()));
+
+      double rotation = driver.getX(Hand.kRight) + (drift * driftScale);
+
+      // Power port challenge
+      // swerve.driverSwerve(driver.getX(Hand.kLeft) * driveScale, -driver.getY(Hand.kLeft) * driveScale,
+      //     rotation, gyro.getAngle(), true);
+
+      // Accuracy challenge
+      swerve.driverSwerve(driver.getX(Hand.kLeft) * driveScale, -driver.getY(Hand.kLeft) * driveScale,
           driver.getX(Hand.kRight), gyro.getAngle(), true);
     }
 
     if (enableIndex) {
-      if (operator.getBButtonPressed()) {
-        index.startLoading();
-      }
+      // Include if the shooter is up to speed in this calculation as well
+      boolean firing = driver.getBButton() && shooter.isAtTargetSpeed();
 
-      if (operator.getAButton()) {
-        index.setState(Index.State.Shooting);
-      } else if (operator.getAButtonReleased()) {
-        index.setState(Index.State.Idle);
-      }
+      boolean ejecting = driver.getYButton();
+
+      index.update(firing, ejecting);
     }
 
-    index.update();
     logger.writeLine();
   }
 

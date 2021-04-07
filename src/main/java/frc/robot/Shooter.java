@@ -12,8 +12,15 @@ import com.revrobotics.ControlType;
 public class Shooter {
 
   // TODO: Determine values
-  static final double EncPerDeg = 1.0f * 360.0f;
-  private static final double HOMING_SPEED_DOWN = -0.3; // Speed at which we seek downward during
+  // static final double EncPerDeg = 42.0f * 100.0f * 180.0f * 7.75f * Math.PI * Math.PI / 180.0f;
+  // static final double EncPerDeg = 100.0f * 180.0f * 7.75f * Math.PI * Math.PI / 180.0f;
+  static final double EncPerDeg = 100.0f * 7.75f / 360.0;
+
+  //OLD
+  // static final double EncPerDeg = 42.0f * 100.0f * 180.0f * 24.5f * 7.75f * Math.PI / 180.0f;
+  // static final double EncPerDeg = 100.0f * 180.0f * 24.5f * 7.75f * Math.PI / 180.0f;
+
+  private static final double HOMING_SPEED_DOWN = -0.1; // Speed at which we seek downward during
                                                         // homing
   private static final double HOME_POSITION = 0.0; // Angle at lower limit switch
   private static final double POSITION_TOLERANCE = 0.05; // Limit of being "close enough" on the
@@ -40,17 +47,19 @@ public class Shooter {
     shooterConfig.peakOutputForward = 1.0;
     shooterConfig.peakOutputReverse = 0.0; // Don't let the motor go backwards
 
-    shooterConfig.slot0.kP = 0.25;
-    shooterConfig.slot0.kI = 0.0;
-    shooterConfig.slot0.kD = 17.0;
+    shooterConfig.slot0.kP = 0.27;
+    shooterConfig.slot0.kI = 0.00015;
+    // shooterConfig.slot0.kI = 0.00015; // Power port challenge factor
+    // shooterConfig.slot0.kD = 0.0;
+    shooterConfig.slot0.kD = 15.0;
     shooterConfig.slot0.kF = 0.0;
 
     shooter.configAllSettings(shooterConfig);
     shooter.setNeutralMode(NeutralMode.Coast);
 
     // Configure the angle motor
-    angle.getPIDController().setP(0.1);
-    angle.getPIDController().setI(0.0);
+    angle.getPIDController().setP(0.015);
+    angle.getPIDController().setI(0.0000007);
     angle.getPIDController().setD(0.0);
     angle.getPIDController().setFeedbackDevice(angle.getEncoder());
     angle.setIdleMode(IdleMode.kBrake);
@@ -75,18 +84,22 @@ public class Shooter {
 
   public void setShooterSpeed(double rpm) {
     shooter.set(TalonFXControlMode.Velocity, rpm);
-    System.out.println(rpm);
+    // System.out.println(rpm);
   }
 
   public double getShooterSpeed() {
     return shooter.getSelectedSensorVelocity();
   }
 
+  public boolean isAtTargetSpeed() {
+    return getShooterSpeed() >= shooter.getClosedLoopTarget();
+  }
+
   public double getTargetAngle() {
     return targetAngle;
   }
 
-  public boolean onTarget() {
+  public boolean isAngleAtTarget() {
     double error = angle.getEncoder().getPosition() - targetAngle;
     return Math.abs(error) < POSITION_TOLERANCE;
   }
@@ -95,15 +108,17 @@ public class Shooter {
    * Run main state machine for semi-autonomous control of the robot.
    */
   public void update() {
+    // System.out.println(state);
+
     switch (state) {
       case HomingDown:
-        angle.set(HOMING_SPEED_DOWN);
+        setAnglePower(HOMING_SPEED_DOWN);
 
-        if (angle.getReverseLimitSwitch(LimitSwitchPolarity.kNormallyOpen).get()) {
+        if (getReverseLimit()) {
           // We've reached the lower limit of the screw assembly, we're now at a
           // known position. Set the absolute position to the encoder so we can deal
           // with easier units.
-          angle.set(0);
+          setAnglePower(0);
           angle.getEncoder().setPosition(HOME_POSITION);
           state = State.Idle;
         }
@@ -112,7 +127,7 @@ public class Shooter {
         // Idle!
         break;
       case MovingToAngle:
-        if (onTarget()) {
+        if (isAngleAtTarget()) {
           state = State.Idle;
         }
         break;
@@ -126,10 +141,6 @@ public class Shooter {
     state = State.HomingDown;
   }
 
-  public void setAnglePower(double power) {
-    angle.set(power);
-  }
-
   /**
    * Sets angle motor to a specified angle
    *
@@ -137,8 +148,13 @@ public class Shooter {
    */
   public void setAngle(double degrees) {
     state = State.MovingToAngle;
-    targetAngle = degrees;
+    targetAngle = degrees * EncPerDeg;
+    System.out.println(degrees);
     angle.getPIDController().setReference(targetAngle, ControlType.kPosition);
+  }
+
+  public void setAnglePower(double power) {
+    angle.set(power);
   }
 
   public double getAngle() {
