@@ -135,17 +135,33 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
 
     if (enableShooter) {
-      // System.out.println("---------------");
-      // System.out.println(shooter.getShooterSpeed());
+      System.out.println("---------------");
+      System.out.println(shooter.getShooterSpeed());
 
       // double shooterTargetSpeed = 0;
       // double shooterTargetAngle = 0;
+      // System.out.println(driver.getPOV());
 
       if (driver.getAButton()) {
         // Power port challenge values
-        // shooterTargetSpeed = 10200.0;
         shooter.setShooterSpeed(10200.0);
         shooter.setAngle(38.1);
+      } else if (driver.getPOV() == 0) {
+        // Accuracy challenge RED zone
+        shooter.setShooterSpeed(11900.0);
+        shooter.setAngle(46.0);
+      } else if (driver.getPOV() == 90) {
+        // Accuracy challenge BLUE zone
+        shooter.setShooterSpeed(10200.0);
+        shooter.setAngle(38.1);
+      } else if (driver.getPOV() == 180) {
+        // Accuracy challenge YELLOW zone
+        shooter.setShooterSpeed(9500.0);
+        shooter.setAngle(38.7);
+      } else if (driver.getPOV() == 270) {
+        // Accuracy challenge GREEN zone
+        shooter.setShooterSpeed(8500.0);
+        shooter.setAngle(31.0);
       } else if (driver.getBumper(Hand.kRight)) {
         shooter.setShooterSpeed(0.0);
       }
@@ -162,7 +178,7 @@ public class Robot extends TimedRobot {
       // }
       // shooter.setShooterSpeed(shooterTargetSpeed);
 
-      // System.out.println(shooter.getAngle());
+      System.out.println(shooter.getAngle());
 
 
       if (driver.getXButtonPressed()) {
@@ -183,8 +199,13 @@ public class Robot extends TimedRobot {
 
       double rotation = driver.getX(Hand.kRight) + (drift * driftScale);
 
+      // Power port challenge
+      // swerve.driverSwerve(driver.getX(Hand.kLeft) * driveScale, -driver.getY(Hand.kLeft) * driveScale,
+      //     rotation, gyro.getAngle(), true);
+
+      // Accuracy challenge
       swerve.driverSwerve(driver.getX(Hand.kLeft) * driveScale, -driver.getY(Hand.kLeft) * driveScale,
-          rotation, gyro.getAngle(), true);
+          driver.getX(Hand.kRight), gyro.getAngle(), true);
     }
 
     if (enableIndex) {

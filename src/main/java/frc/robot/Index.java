@@ -10,7 +10,8 @@ public class Index {
   public DigitalInput finalIndex;
 
   private double indexSpeed = 0.2;
-  private double shootSpeed = 0.5;
+  // private double shootSpeed = 0.5; // Power port challenge
+  private double shootSpeed = 0.2; // Accuracy challenge
   private int numBalls;
 
   public enum State {

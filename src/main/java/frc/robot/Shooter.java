@@ -49,6 +49,7 @@ public class Shooter {
 
     shooterConfig.slot0.kP = 0.27;
     shooterConfig.slot0.kI = 0.00015;
+    // shooterConfig.slot0.kI = 0.00015; // Power port challenge factor
     // shooterConfig.slot0.kD = 0.0;
     shooterConfig.slot0.kD = 15.0;
     shooterConfig.slot0.kF = 0.0;
