@@ -11,7 +11,7 @@ public class Index {
 
   private double indexSpeed = 0.2;
   // private double shootSpeed = 0.5; // Power port challenge
-  private double shootSpeed = 0.2; // Accuracy challenge
+  private double shootSpeed = 0.5; // Accuracy challenge
   private int numBalls;
 
   public enum State {

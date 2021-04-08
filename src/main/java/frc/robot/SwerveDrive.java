@@ -196,10 +196,10 @@ public class SwerveDrive {
     public void tankDrive(double left, double right)
     {
         angleToZero();
-        FR.setDriveSpeed(right);
-        BR.setDriveSpeed(right);
-        FL.setDriveSpeed(-left);
-        BL.setDriveSpeed(-left);
+        FR.setDrive(-right);
+        BR.setDrive(-right);
+        FL.setDrive(left);
+        BL.setDrive(left);
     }
 
     public static SwerveTarget closestAngle(double p, double t)
