@@ -182,8 +182,9 @@ public class Robot extends TimedRobot {
 
 
       if (driver.getXButtonPressed()) {
-        shooter.reHome();
-        gyroHeading = gyro.getAngle();
+        // shooter.reHome();
+        // gyroHeading = gyro.getAngle();
+        gyro.reset();
       }
 
       if (driver.getBumperPressed(Hand.kRight)) {
@@ -194,7 +195,7 @@ public class Robot extends TimedRobot {
     }
 
     if (enableDrivetrain) {
-      double driveScale = 0.9;
+      double driveScale = 0.65;
       double driftScale = 0.1;
 
       double drift = gyroHeading - gyro.getAngle();
