@@ -145,7 +145,7 @@ public class Robot extends TimedRobot {
       if (driver.getAButton()) {
         // Power port challenge values
         shooter.setShooterSpeed(10200.0);
-        shooter.setAngle(38.1);
+        // shooter.setAngle(46.0);
       } else if (driver.getPOV() == 0) {
         // Accuracy challenge RED zone
         shooter.setShooterSpeed(11900.0);
@@ -182,15 +182,20 @@ public class Robot extends TimedRobot {
 
 
       if (driver.getXButtonPressed()) {
-        shooter.reHome();
-        gyroHeading = gyro.getAngle();
+        // shooter.reHome();
+        // gyroHeading = gyro.getAngle();
+        gyro.reset();
+      }
+
+      if (driver.getBumperPressed(Hand.kRight)) {
+        shooter.setAngle(46.0);
       }
 
       shooter.update();
     }
 
     if (enableDrivetrain) {
-      double driveScale = 0.9;
+      double driveScale = 0.65;
       double driftScale = 0.1;
 
       double drift = gyroHeading - gyro.getAngle();
@@ -206,11 +211,16 @@ public class Robot extends TimedRobot {
       // Accuracy challenge
       swerve.driverSwerve(driver.getX(Hand.kLeft) * driveScale, -driver.getY(Hand.kLeft) * driveScale,
           driver.getX(Hand.kRight), gyro.getAngle(), true);
+
+      // TANK
+      // swerve.tankDrive(driver.getY(Hand.kLeft) * driveScale, driver.getY(Hand.kRight) * driveScale);
     }
 
     if (enableIndex) {
       // Include if the shooter is up to speed in this calculation as well
       boolean firing = driver.getBButton() && shooter.isAtTargetSpeed();
+
+      System.out.println(firing);
 
       boolean ejecting = driver.getYButton();
 

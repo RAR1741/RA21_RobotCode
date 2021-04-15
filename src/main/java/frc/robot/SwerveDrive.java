@@ -158,11 +158,10 @@ public class SwerveDrive {
         BR.setDrive(ws3 * scaleSpeed);
         BL.setDrive(-ws4 * scaleSpeed);
 
-        // TOOD: FIx this...
-        // FR.setAngle(wa2);
-        // FL.setAngle(wa1);
-        // BR.setAngle(wa3);
-        // BL.setAngle(wa4);
+        FR.setAngle(wa2);
+        FL.setAngle(wa1);
+        BR.setAngle(wa3);
+        BL.setAngle(wa4);
     }
 
     public void setBrake()
@@ -196,10 +195,10 @@ public class SwerveDrive {
     public void tankDrive(double left, double right)
     {
         angleToZero();
-        FR.setDriveSpeed(right);
-        BR.setDriveSpeed(right);
-        FL.setDriveSpeed(-left);
-        BL.setDriveSpeed(-left);
+        FR.setDrive(-right);
+        BR.setDrive(-right);
+        FL.setDrive(left);
+        BL.setDrive(left);
     }
 
     public static SwerveTarget closestAngle(double p, double t)
