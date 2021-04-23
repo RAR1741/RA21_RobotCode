@@ -1,17 +1,15 @@
 package frc.robot;
 
-import com.kauailabs.navx.frc.AHRS;
-
 public class SwerveDrive {
 
-    private double TurningSpeedFactor;
+    private final double TurningSpeedFactor = -0.3;
     private double length, width, diameter;
     private double temp;
     private double a,b,c,d;
     private double ws1,ws2,ws3,ws4;
     private double wa1,wa2,wa3,wa4;
     private double max;
-    private int movecount;
+    private int moveCount;
 
     private SwerveModule FR;
     private SwerveModule FL;
@@ -32,7 +30,12 @@ public class SwerveDrive {
         ws1 = 0.0;ws2 = 0.0;ws3 = 0.0;ws4 = 0.0;
         wa1 = 0.0;wa2 = 0.0;wa3 = 0.0;wa4 = 0.0;
         max = 0.0;
-        movecount = 20;
+        moveCount = 20;
+
+        FR.initMagEncoder(1237.0);
+        FL.initMagEncoder(545.0);
+        BR.initMagEncoder(3024.0);
+        BL.initMagEncoder(1986.0);
     }
 
     // Test Code
@@ -60,25 +63,25 @@ public class SwerveDrive {
         if((x!=0 || y!=0) || z!=0)
         {
             swerve(x, y, z, gyro, fieldOrient);
-            movecount = 20;
+            moveCount = 30;
         }
         else
         {
-            movecount--;
-            if(movecount < 0)
+            moveCount--;
+            if(moveCount < 0)
             {
                 swerve(0, 0, 0, 0, false);
             }
             else
             {
                 FR.setDrive(0);
-                // FL.setDrive(0);
-                // BR.setDrive(0);
-                // BL.setDrive(0);
+                FL.setDrive(0);
+                BR.setDrive(0);
+                BL.setDrive(0);
             }
         }
     }
-    
+
     public void swerve(double x, double y, double z, double gyro, boolean fieldOrient)
     {
         gyro *= Math.PI/180.0f;
@@ -90,8 +93,8 @@ public class SwerveDrive {
             y = temp;
         }
 
-        a = x - z * (length/diameter);
-        b = x + z * (length/diameter);
+        a = x + z * (length/diameter);
+        b = x - z * (length/diameter);
         c = y - z * (width/diameter);
         d = y + z * (width/diameter);
 
@@ -110,73 +113,55 @@ public class SwerveDrive {
         wa2 = Math.atan2(b,d) * 180.0f/Math.PI;
         wa3 = Math.atan2(a,d) * 180.0f/Math.PI;
         wa4 = Math.atan2(a,c) * 180.0f/Math.PI;
-        
         if(wa1 < 0){wa1 += 360;}//wa1 = FL
         if(wa2 < 0){wa2 += 360;}//wa2 = FR
         if(wa3 < 0){wa3 += 360;}//wa3 = BR
         if(wa4 < 0){wa4 += 360;}//wa4 = BL
 
-        double joystickA = wa2;
+        wa1 = 360 - wa1;
+        wa2 = 360 - wa2;
+        wa3 = 360 - wa3;
+        wa4 = 360 - wa4;
 
         SwerveTarget tmp;
-        // if((tmp = closestAngle(FR.getAngleEncoder()/FR.getEncPerDeg(), wa2)) != wa2 && ((tmp + 360)%360 != wa2 || (tmp - 360)%360 != wa2))
-        // {
-        // 	System.out.println("FLIPPED");
-        //     wa2 = tmp;
-        //     ws2 *= -1;
-        // }
 
-        double currentAngle = FR.getAngleEncoder() / FR.getEncPerDeg();
+        tmp = closestAngle(FL.getAngle(), wa1);
+        wa1 = tmp.getTarget();
+        ws1 *= tmp.getMotorScale();
 
-        System.out.println(String.format("J: %3.2f \tA: %3.2f \t P: %3.2f", joystickA, wa2, currentAngle));
-
-        // System.out.println(String.format("A: %3.2f", wa2));
-        tmp = closestAngle(currentAngle, wa2);
-        // System.out.println(String.format("A: %3.2f", wa2));
-        // System.out.println("-------------");
-
-        System.out.println(String.format("J: %3.2f \tA: %3.2f \t P: %3.2f", joystickA, tmp.getTarget(), currentAngle));
-
+        tmp = closestAngle(FR.getAngle(), wa2);
         wa2 = tmp.getTarget();
         ws2 *= tmp.getMotorScale();
-        
-        // if((tmp = closestAngle(FL.getAngleEncoder()/FL.getEncPerDeg(), wa1)) != wa1)
-        // {
-        //     wa1 = tmp;
-        //     ws1 *= -1;
-        // }
-        // if((tmp = closestAngle(BR.getAngleEncoder()/BR.getEncPerDeg(), wa3)) != wa3)
-        // {
-        //     wa3 = tmp;
-        //     ws3 *= -1;
-        // }
-        // if((tmp = closestAngle(BL.getAngleEncoder()/BL.getEncPerDeg(), wa4)) != wa4)
-        // {
-        //     wa4 = tmp;
-        //     ws4 *= -1;
-        // }
 
+        tmp = closestAngle(BR.getAngle(), wa3);
+        wa3 = tmp.getTarget();
+        ws3 *= tmp.getMotorScale();
 
-        System.out.println(String.format("J: %3.2f \tA: %3.2f \t P: %3.2f", joystickA, wa2, currentAngle));
-        System.out.println("-------------");
+        tmp = closestAngle(BL.getAngle(), wa4);
+        wa4 = tmp.getTarget();
+        ws4 *= tmp.getMotorScale();
 
-        
-        FR.setDrive(ws2);
-        // FL.setDrive(-ws1);
-        // BR.setDrive(ws3);
-        // BL.setDrive(-ws4);
+        double maxPower = Math.max(Math.abs(ws1),Math.max(Math.abs(ws2), Math.max(Math.abs(ws3), Math.abs(ws4))));
+        if(maxPower > 1.0)
+        {
+            ws1 /= maxPower;
+            ws2 /= maxPower;
+            ws3 /= maxPower;
+            ws4 /= maxPower;
+        }
 
-        // System.out.println("J: " + String.valueOf(wa2));
-        // System.out.println("A: " + String.valueOf(wa2));
-        // System.out.println("S: " + String.valueOf(ws2));
-        // System.out.println("");
+        double scaleSpeed = 0.5;
+
+        FR.setDrive(ws2 * scaleSpeed);
+        FL.setDrive(-ws1 * scaleSpeed);
+        BR.setDrive(ws3 * scaleSpeed);
+        BL.setDrive(-ws4 * scaleSpeed);
 
         FR.setAngle(wa2);
         FL.setAngle(wa1);
         BR.setAngle(wa3);
         BL.setAngle(wa4);
     }
-    
     public void setBrake()
     {
         FR.setBrake();
@@ -184,7 +169,6 @@ public class SwerveDrive {
         BR.setBrake();
         BL.setBrake();
     }
-    
     public void setCoast()
     {
         FR.setCoast();
@@ -192,57 +176,37 @@ public class SwerveDrive {
         BR.setCoast();
         BL.setCoast();
     }
-    
+
     public void angleToZero()
     {
         FR.setDrive(0);
-        // FL.setDrive(0);
-        // BR.setDrive(0);
-        // BL.setDrive(0);
+        FL.setDrive(0);
+        BR.setDrive(0);
+        BL.setDrive(0);
         FR.setAngle(0);
         FL.setAngle(0);
         BR.setAngle(0);
         BL.setAngle(0);
     }
-    
+
     public void tankDrive(double left, double right)
     {
         angleToZero();
-        FR.setDriveSpeed(right);
-        // BR.setDriveSpeed(right);
-        // FL.setDriveSpeed(-left);
-        // BL.setDriveSpeed(-left);
+        FR.setDrive(-right);
+        BR.setDrive(-right);
+        FL.setDrive(left);
+        BL.setDrive(left);
     }
-
-    // public static double closestAngle(double p, double t)
-    // {
-    // 	// return t;
-    // 	System.out.println("Position, Target:" + String.valueOf(p) + ":" + String.valueOf(t));
-
-    // 	p %= 360;
-    // 	double t1 = t % 360;
-    // 	double t2 = (t1+180)%360;
-
-    // 	double d1 = Math.abs(p - t1);
-    // 	if(d1 > 180) d1 = 360 - d1;
-
-    // 	double d2 = Math.abs(p -t2);
-    // 	if(d2 > 180) d2 = 360 - d2;
-
-    // 	return (d1 < d2 ? t1 : t2);
-    // }
 
     public static SwerveTarget closestAngle(double p, double t)
     {
-        // return new SwerveTarget(t, 1);
-
         double pTemp = p;
-        
+
         p %= 360;
         if(p < 0) p += 360;
-        
+
         double t1 = t % 360;
-        
+
         double d1 = t1 - p;
         if(d1 > 180) d1 = d1 - 360;
         if(d1 < -180) d1 = d1 + 360;
@@ -260,4 +224,3 @@ public class SwerveDrive {
         return FR.getDriveEnc();
     }
 }
-
