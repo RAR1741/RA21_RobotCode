@@ -117,21 +117,20 @@ public class Robot extends TimedRobot {
 
     timer.reset();
     timer.start();
+
+    gyro.reset();
+    auton = new JsonAutonomous("/home/lvuser/deploy/autos/turn-test.json", gyro, swerve);
   }
 
   @Override
   public void autonomousPeriodic() {
-    gyro.reset();
-
-    auton = new JsonAutonomous("/home/lvuser/deploy/autos/auto-test.json", gyro, swerve);
+    auton.run();
 
     logger.writeLine();
   }
 
   @Override
   public void teleopInit() {
-    auton.run();
-
     logger.open();
     logger.setup();
 

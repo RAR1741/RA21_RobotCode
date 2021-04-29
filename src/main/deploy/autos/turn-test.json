@@ -1,0 +1,12 @@
+{
+    "auto": [
+        {
+            "type": "turgDeg",
+            "unit": "Degrees",
+            "amount": 90,
+            "args": [
+                0.2
+            ]
+        }
+    ]
+}
