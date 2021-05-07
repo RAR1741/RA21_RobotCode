@@ -113,7 +113,6 @@ public class SwerveDrive {
         wa2 = Math.atan2(b,d) * 180.0f/Math.PI;
         wa3 = Math.atan2(a,d) * 180.0f/Math.PI;
         wa4 = Math.atan2(a,c) * 180.0f/Math.PI;
-
         if(wa1 < 0){wa1 += 360;}//wa1 = FL
         if(wa2 < 0){wa2 += 360;}//wa2 = FR
         if(wa3 < 0){wa3 += 360;}//wa3 = BR
@@ -163,7 +162,6 @@ public class SwerveDrive {
         BR.setAngle(wa3);
         BL.setAngle(wa4);
     }
-
     public void setBrake()
     {
         FR.setBrake();
@@ -171,7 +169,6 @@ public class SwerveDrive {
         BR.setBrake();
         BL.setBrake();
     }
-
     public void setCoast()
     {
         FR.setCoast();
@@ -221,5 +218,9 @@ public class SwerveDrive {
         double target = pTemp + df;
 
         return new SwerveTarget(target, motorScale);
+    }
+
+    public double getEncoder() {
+        return FR.getDriveEnc();
     }
 }

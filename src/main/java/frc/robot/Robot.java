@@ -30,6 +30,8 @@ public class Robot extends TimedRobot {
   Boolean enableShooter = true;
   Boolean enableIndex = true;
 
+  private JsonAutonomous auton;
+
   AHRS gyro;
 
   Shooter shooter;
@@ -115,10 +117,15 @@ public class Robot extends TimedRobot {
 
     timer.reset();
     timer.start();
+
+    gyro.reset();
+    auton = new JsonAutonomous("/home/lvuser/deploy/autos/auto-test.json", gyro, swerve);
   }
 
   @Override
   public void autonomousPeriodic() {
+    auton.run();
+
     logger.writeLine();
   }
 
