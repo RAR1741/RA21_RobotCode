@@ -1,11 +1,11 @@
 {
     "auto": [
         {
-            "type": "turgDeg",
+            "type": "turnDeg",
             "unit": "Degrees",
             "amount": 90,
             "args": [
-                0.2
+                0.8
             ]
         }
     ]

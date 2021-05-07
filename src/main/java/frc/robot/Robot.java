@@ -119,7 +119,7 @@ public class Robot extends TimedRobot {
     timer.start();
 
     gyro.reset();
-    auton = new JsonAutonomous("/home/lvuser/deploy/autos/turn-test.json", gyro, swerve);
+    auton = new JsonAutonomous("/home/lvuser/deploy/autos/auto-test.json", gyro, swerve);
   }
 
   @Override
