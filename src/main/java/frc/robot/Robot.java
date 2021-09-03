@@ -227,6 +227,8 @@ public class Robot extends TimedRobot {
       index.update(firing, ejecting);
     }
 
+
+
     logger.writeLine();
   }
 

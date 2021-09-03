@@ -32,10 +32,10 @@ public class SwerveDrive {
         max = 0.0;
         moveCount = 20;
 
-        FR.initMagEncoder(1237.0);
-        FL.initMagEncoder(545.0);
-        BR.initMagEncoder(3024.0);
-        BL.initMagEncoder(1986.0);
+        FR.initMagEncoder(1238.0);
+        FL.initMagEncoder(538.0);
+        BR.initMagEncoder(3020.0);
+        BL.initMagEncoder(1913.0);
     }
 
     // Test Code
@@ -56,6 +56,10 @@ public class SwerveDrive {
         FL.setAngleSpeed(speed);
         BR.setAngleSpeed(speed);
         BL.setAngleSpeed(speed);
+    }
+
+    public void returnEncoders(){
+        System.out.println(String.format("FR: %3.2f \t FL: %3.2f \t BR: %3.2f \t BL %3.2f", FR.getAngleEncoder(), FL.getAngleEncoder(), BR.getAngleEncoder(), BL.getAngleEncoder()));
     }
 
     public void driverSwerve(double x, double y, double z, double gyro, boolean fieldOrient)
