@@ -34,8 +34,8 @@ public class SwerveDrive {
 
         FR.initMagEncoder(1237.0);
         FL.initMagEncoder(545.0);
-        BR.initMagEncoder(3024.0);
-        BL.initMagEncoder(1986.0);
+        BR.initMagEncoder(3059.0);
+        BL.initMagEncoder(1939.0);
     }
 
     // Test Code

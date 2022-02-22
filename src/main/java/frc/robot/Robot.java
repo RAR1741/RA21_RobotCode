@@ -27,8 +27,8 @@ import frc.robot.logging.Logger;
 public class Robot extends TimedRobot {
 
   Boolean enableDrivetrain = true;
-  Boolean enableShooter = true;
-  Boolean enableIndex = true;
+  Boolean enableShooter = false;
+  Boolean enableIndex = false;
 
   AHRS gyro;
 
@@ -174,17 +174,18 @@ public class Robot extends TimedRobot {
     }
 
     if (enableDrivetrain) {
-      double driveScale = 0.9;
+      double driveScale = 0.65;
       double driftScale = 0.1;
 
       double drift = gyroHeading - gyro.getAngle();
 
       // System.out.println(String.format("%s \t| %s \t| %s", gyroHeading, drift, gyro.getAngle()));
 
-      double rotation = driver.getX(Hand.kRight) + (drift * driftScale);
+      //double rotation = driver.getX(Hand.kRight) + (drift * driftScale);
+      double rotation = (drift * driftScale);
 
       swerve.driverSwerve(driver.getX(Hand.kLeft) * driveScale, -driver.getY(Hand.kLeft) * driveScale,
-          rotation, gyro.getAngle(), true);
+         rotation, gyro.getAngle(), false);
     }
 
     if (enableIndex) {
@@ -193,7 +194,12 @@ public class Robot extends TimedRobot {
 
       boolean ejecting = driver.getYButton();
 
-      index.update(firing, ejecting);
+      if(firing && ejecting)
+        index.setIndexSpeed(0.5);
+      else
+        index.setIndexSpeed(0);
+
+      // 0index.update(firing, ejecting);
     }
 
     logger.writeLine();
