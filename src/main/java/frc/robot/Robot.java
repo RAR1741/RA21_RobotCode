@@ -10,7 +10,6 @@ import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.TimedRobot;
 import frc.robot.logging.LoggableController;
@@ -162,9 +161,9 @@ public class Robot extends TimedRobot {
         // Accuracy challenge GREEN zone
         shooter.setShooterSpeed(8500.0);
         shooter.setAngle(31.0);
-      } else if (driver.getBumper(Hand.kRight)) {
+      } else if (driver.getRightBumper()) {
         shooter.setShooterSpeed(0.0);
-      }
+      } 
 
       // else if (driver.getBButton()) {
       //   shooterTargetSpeed = 15000.0;
@@ -187,7 +186,7 @@ public class Robot extends TimedRobot {
         gyro.reset();
       }
 
-      if (driver.getBumperPressed(Hand.kRight)) {
+      if (driver.getRightBumperPressed()) {
         shooter.setAngle(46.0);
       }
 
@@ -202,18 +201,18 @@ public class Robot extends TimedRobot {
 
       // System.out.println(String.format("%s \t| %s \t| %s", gyroHeading, drift, gyro.getAngle()));
 
-      double rotation = driver.getX(Hand.kRight) + (drift * driftScale);
+      double rotation = driver.getRightX() + (drift * driftScale);
 
       // Power port challenge
-      // swerve.driverSwerve(driver.getX(Hand.kLeft) * driveScale, -driver.getY(Hand.kLeft) * driveScale,
+      // swerve.driverSwerve(driver.getLeftX() * driveScale, -driver.getLeftY() * driveScale,
       //     rotation, gyro.getAngle(), true);
 
       // Accuracy challenge
-      swerve.driverSwerve(driver.getX(Hand.kLeft) * driveScale, -driver.getY(Hand.kLeft) * driveScale,
-          driver.getX(Hand.kRight), gyro.getAngle(), true);
+      swerve.driverSwerve(driver.getLeftX() * driveScale, -driver.getLeftY() * driveScale,
+          driver.getRightX(), gyro.getAngle(), true);
 
       // TANK
-      // swerve.tankDrive(driver.getY(Hand.kLeft) * driveScale, driver.getY(Hand.kRight) * driveScale);
+      // swerve.tankDrive(driver.getLeftY() * driveScale, driver.getRightY() * driveScale);
     }
 
     if (enableIndex) {

@@ -16,7 +16,7 @@ public class SwerveDrive {
     private SwerveModule BR;
     private SwerveModule BL;
 
-    public SwerveDrive(SwerveModule FR, SwerveModule FL, SwerveModule BR, SwerveModule BL){
+    public SwerveDrive(SwerveModule FR, SwerveModule FL, SwerveModule BR, SwerveModule BL) {
         this.FR = FR;
         this.FL = FL;
         this.BR = BR;
@@ -82,7 +82,7 @@ public class SwerveDrive {
         }
     }
 
-    public void swerve(double x, double y, double z, double gyro, boolean fieldOrient)
+    public void swerve(double x, double y, double z, double gyro, boolean fieldOrient) 
     {
         gyro *= Math.PI/180.0f;
         z *= TurningSpeedFactor;
@@ -103,21 +103,42 @@ public class SwerveDrive {
         ws3 = Math.sqrt(Math.pow(a,2) + Math.pow(d,2));
         ws4 = Math.sqrt(Math.pow(a,2) + Math.pow(c,2));
         max = 0;
-        if(ws1 > max){max = ws1;}
-        if(ws2 > max){max = ws2;}
-        if(ws3 > max){max = ws3;}
-        if(ws4 > max){max = ws4;}
-        if(max > 1){ws1 /= max;ws2 /= max;ws3 /= max;ws4 /= max;}
+        if(ws1 > max) {
+            max = ws1;
+        }
+        if(ws2 > max) {
+            max = ws2;
+        }
+        if(ws3 > max) {
+            max = ws3;
+        }
+        if(ws4 > max) {
+            max = ws4;
+        }
+        if(max > 1) {
+            ws1 /= max;
+            ws2 /= max;
+            ws3 /= max;
+            ws4 /= max;
+        }
 
         wa1 = Math.atan2(b,c) * 180.0f/Math.PI;
         wa2 = Math.atan2(b,d) * 180.0f/Math.PI;
         wa3 = Math.atan2(a,d) * 180.0f/Math.PI;
         wa4 = Math.atan2(a,c) * 180.0f/Math.PI;
 
-        if(wa1 < 0){wa1 += 360;}//wa1 = FL
-        if(wa2 < 0){wa2 += 360;}//wa2 = FR
-        if(wa3 < 0){wa3 += 360;}//wa3 = BR
-        if(wa4 < 0){wa4 += 360;}//wa4 = BL
+        if(wa1 < 0) {
+            wa1 += 360; //wa1 = FL
+        }
+        if(wa2 < 0) {
+            wa2 += 360; //wa2 = FR
+        }
+        if(wa3 < 0) {
+            wa3 += 360; //wa3 = BR
+        }
+        if(wa4 < 0) {
+            wa4 += 360; //wa4 = BL
+        }
 
         wa1 = 360 - wa1;
         wa2 = 360 - wa2;
