@@ -2,7 +2,7 @@ package frc.robot;
 
 public class SwerveDrive {
 
-    private final double TurningSpeedFactor = -0.3;
+    private final double TurningSpeedFactor = -0.3; //TODO: More sane variable names
     private double length, width, diameter;
     private double temp;
     private double a,b,c,d;
@@ -58,22 +58,15 @@ public class SwerveDrive {
         BL.setAngleSpeed(speed);
     }
 
-    public void driverSwerve(double x, double y, double z, double gyro, boolean fieldOrient)
-    {
-        if((x!=0 || y!=0) || z!=0)
-        {
+    public void driverSwerve(double x, double y, double z, double gyro, boolean fieldOrient) {
+        if((x!=0 || y!=0) || z!=0) {
             swerve(x, y, z, gyro, fieldOrient);
             moveCount = 30;
-        }
-        else
-        {
-            moveCount--;
-            if(moveCount < 0)
-            {
+        } else {
+            moveCount--; //TODO: Why do we need moveCount? Just kill the motors?
+            if(moveCount < 0) {
                 swerve(0, 0, 0, 0, false);
-            }
-            else
-            {
+            } else {
                 FR.setDrive(0);
                 FL.setDrive(0);
                 BR.setDrive(0);
@@ -82,27 +75,25 @@ public class SwerveDrive {
         }
     }
 
-    public void swerve(double x, double y, double z, double gyro, boolean fieldOrient) 
-    {
+    public void swerve(double x, double y, double z, double gyro, boolean fieldOrient) {
         gyro *= Math.PI/180.0f;
         z *= TurningSpeedFactor;
-        if(fieldOrient)
-        {
-            temp = y * Math.cos(gyro) + x * Math.sin(gyro);
+        if(fieldOrient) {
+            temp = y * Math.cos(gyro) + x * Math.sin(gyro); //TODO: consider getting rid of the temp variable or making it local i hate this
             x = -y * Math.sin(gyro) + x * Math.cos(gyro);
             y = temp;
         }
 
-        a = x + z * (length/diameter);
-        b = x - z * (length/diameter);
-        c = y - z * (width/diameter);
-        d = y + z * (width/diameter);
+        a = x + z * (length/diameter); //cos
+        b = x - z * (length/diameter); //sec
+        c = y - z * (width/diameter); //csc
+        d = y + z * (width/diameter); //sin
 
         ws1 = Math.sqrt(Math.pow(b,2) + Math.pow(c,2));
         ws2 = Math.sqrt(Math.pow(b,2) + Math.pow(d,2));
         ws3 = Math.sqrt(Math.pow(a,2) + Math.pow(d,2));
-        ws4 = Math.sqrt(Math.pow(a,2) + Math.pow(c,2));
-        max = 0;
+        ws4 = Math.sqrt(Math.pow(a,2) + Math.pow(c,2)); 
+        max = 0; //TODO: replace this crap with Math.max
         if(ws1 > max) {
             max = ws1;
         }
@@ -116,19 +107,19 @@ public class SwerveDrive {
             max = ws4;
         }
         if(max > 1) {
-            ws1 /= max;
+            ws1 /= max; //TODO: Might need to keep the math variable :P
             ws2 /= max;
             ws3 /= max;
             ws4 /= max;
         }
 
-        wa1 = Math.atan2(b,c) * 180.0f/Math.PI;
+        wa1 = Math.atan2(b,c) * 180.0f/Math.PI; //TODO: why are you converting radians to radians????
         wa2 = Math.atan2(b,d) * 180.0f/Math.PI;
         wa3 = Math.atan2(a,d) * 180.0f/Math.PI;
         wa4 = Math.atan2(a,c) * 180.0f/Math.PI;
 
-        if(wa1 < 0) {
-            wa1 += 360; //wa1 = FL
+        if(wa1 < 0) { //TODO: change these variables to waFL, waFR, etc.
+            wa1 += 360; //wa1 = FL 
         }
         if(wa2 < 0) {
             wa2 += 360; //wa2 = FR
@@ -145,7 +136,7 @@ public class SwerveDrive {
         wa3 = 360 - wa3;
         wa4 = 360 - wa4;
 
-        SwerveTarget tmp;
+        SwerveTarget tmp; //TODO: We could probably get rid of this variable
 
         tmp = closestAngle(FL.getAngle(), wa1);
         wa1 = tmp.getTarget();
@@ -164,15 +155,14 @@ public class SwerveDrive {
         ws4 *= tmp.getMotorScale();
 
         double maxPower = Math.max(Math.abs(ws1),Math.max(Math.abs(ws2), Math.max(Math.abs(ws3), Math.abs(ws4))));
-        if(maxPower > 1.0)
-        {
+        if(maxPower > 1.0) {
             ws1 /= maxPower;
             ws2 /= maxPower;
             ws3 /= maxPower;
             ws4 /= maxPower;
         }
 
-        double scaleSpeed = 0.5;
+        double scaleSpeed = 0.5; //TODO: Should probably be some config value to change this
 
         FR.setDrive(ws2 * scaleSpeed);
         FL.setDrive(-ws1 * scaleSpeed);
@@ -185,36 +175,32 @@ public class SwerveDrive {
         BL.setAngle(wa4);
     }
 
-    public void setBrake()
-    {
+    public void setBrake() {
         FR.setBrake();
         FL.setBrake();
         BR.setBrake();
         BL.setBrake();
     }
 
-    public void setCoast()
-    {
+    public void setCoast() {
         FR.setCoast();
         FL.setCoast();
         BR.setCoast();
         BL.setCoast();
     }
 
-    public void angleToZero()
-    {
+    public void angleToZero() { //TODO: setDrive and setAngle should have a method where it does both
         FR.setDrive(0);
         FL.setDrive(0);
         BR.setDrive(0);
-        BL.setDrive(0);
+        BL.setDrive(0); 
         FR.setAngle(0);
         FL.setAngle(0);
         BR.setAngle(0);
         BL.setAngle(0);
     }
 
-    public void tankDrive(double left, double right)
-    {
+    public void tankDrive(double left, double right) {
         angleToZero();
         FR.setDrive(-right);
         BR.setDrive(-right);
@@ -222,8 +208,7 @@ public class SwerveDrive {
         BL.setDrive(left);
     }
 
-    public static SwerveTarget closestAngle(double p, double t)
-    {
+    public static SwerveTarget closestAngle(double p, double t) { //TODO: We don't understand this, going to ask Cory
         double pTemp = p;
 
         p %= 360;
@@ -235,7 +220,7 @@ public class SwerveDrive {
         if(d1 > 180) d1 = d1 - 360;
         if(d1 < -180) d1 = d1 + 360;
 
-        double d2 = (d1 > 0 ? d1 - 180 : 180 + d1);
+        double d2 = (d1 > 0 ? d1 - 180 : 180 + d1); //good use of ternary
         double df = (Math.abs(d1) <= Math.abs(d2) ? d1 : d2);
         double motorScale = (Math.abs(d1) <= Math.abs(d2) ? 1 : -1);
 

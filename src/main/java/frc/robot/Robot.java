@@ -79,7 +79,7 @@ public class Robot extends TimedRobot {
     }
 
     if (enableDrivetrain) {
-      BL = new SwerveModule(new TalonFX(3), new WPI_TalonSRX(6));
+      BL = new SwerveModule(new TalonFX(3), new WPI_TalonSRX(6)); //TODO: Why is this here?
       FR = new SwerveModule(new TalonFX(5), new WPI_TalonSRX(4));
       FL = new SwerveModule(new TalonFX(7), new WPI_TalonSRX(8));
       BR = new SwerveModule(new TalonFX(9), new WPI_TalonSRX(10));

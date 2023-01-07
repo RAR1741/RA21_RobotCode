@@ -30,8 +30,7 @@ public class SwerveModule {
         angleOffset = 0;
     }
 
-    public void setAngleDrive(double speed, double angle)
-    {
+    public void setAngleDrive(double speed, double angle) { //TODO: Never used
         if(Math.abs(getAngleEncoder()/EncPerDeg - angle) > 90)
         {
             angle = (angle + 180)%360;
@@ -96,5 +95,4 @@ public class SwerveModule {
     public void initMagEncoder(double encoderCenter){
         angleOffset = encoderCenter;
     }
-
 }
