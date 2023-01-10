@@ -15,7 +15,7 @@ public class SwerveModule {
     public TalonSRX angle;
     public TalonSRXPIDSetConfiguration pid;
 
-    public SwerveModule(TalonFX d, TalonSRX a){
+    public SwerveModule(TalonFX d, TalonSRX a) {
         drive = d;
         angle = a;
 
@@ -31,68 +31,62 @@ public class SwerveModule {
     }
 
     public void setAngleDrive(double speed, double angle) { //TODO: Never used
-        if(Math.abs(getAngleEncoder()/EncPerDeg - angle) > 90)
-        {
+        if(Math.abs(getAngleEncoder()/EncPerDeg - angle) > 90) {
             angle = (angle + 180)%360;
             speed = -speed;
         }
     }
 
-    public double getTurnSpeed()
-    {
+    public double getTurnSpeed() {
         return angle.getSelectedSensorVelocity();
     }
 
-    public void setAngleSpeed(double speed)
-    {
+    public void setAngleSpeed(double speed) {
         angle.set(ControlMode.PercentOutput, speed);
     }
 
-    public void setDrive(double speed)
-    {
+    public void setDrive(double speed) {
         drive.set(TalonFXControlMode.PercentOutput, speed);
     }
 
-    public void setDriveSpeed(double speed)
-    {
+    public void setDriveSpeed(double speed) {
         drive.set(TalonFXControlMode.Velocity, speed * 2048.0 / 600.0);
     }
 
-    public double getAngleEncoder()
-    {
+    public double getAngleEncoder() {
         return angle.getSensorCollection().getPulseWidthPosition() - angleOffset;
     }
 
-    public void setAngle(double goal)
-    {
-        angle.set(ControlMode.Position, goal*EncPerDeg + angleOffset);
+    public void setAngle(double goal) {
+        angle.set(ControlMode.Position, goal * EncPerDeg + angleOffset);
     }
 
-    public double getAngleCurrent()
-    {
+    public double getAngleCurrent() {
         return angle.getStatorCurrent();
     }
 
-    public double getDriveEnc()
-    {
+    public double getDriveEnc() {
         return drive.getSelectedSensorPosition();
     }
 
-    public double getAngle(){
+    public double getAngle() {
         return getAngleEncoder()/EncPerDeg;
     }
 
-    public void setBrake()
-    {
+    public void setBrake() {
         drive.setNeutralMode(NeutralMode.Brake);
     }
 
-    public void setCoast()
-    {
+    public void reZero() { //i dont like the name :P
+        setDrive(0);
+        setAngle(0);
+    }
+
+    public void setCoast() {
         drive.setNeutralMode(NeutralMode.Coast);
     }
 
-    public void initMagEncoder(double encoderCenter){
+    public void initMagEncoder(double encoderCenter) {
         angleOffset = encoderCenter;
     }
 }
